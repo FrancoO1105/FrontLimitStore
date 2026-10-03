@@ -1,0 +1,894 @@
+
+
+<div class="container-fluid ventas-page">
+
+  <app-control-caja
+    [ventaEnCurso]="guardando"
+  ></app-control-caja>
+
+  <div class="ventas-layout">
+
+    <!-- ===================================================== -->
+    <!-- COLUMNA IZQUIERDA                                     -->
+    <!-- ===================================================== -->
+
+    <main class="ventas-left">
+
+      <!-- =================================================== -->
+      <!-- CABECERA + BUSCADOR                                 -->
+      <!-- =================================================== -->
+
+      <div class="card main-card">
+
+        <div class="card-body">
+
+          <div class="page-header-content">
+
+            <div class="page-icon">
+              <i class="bi bi-cart3"></i>
+            </div>
+
+            <div class="page-heading">
+
+              <h2 class="page-title">
+                Ventas
+              </h2>
+
+              <p class="page-description">
+                Registra ventas y descuenta automáticamente el stock.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- BUSCADOR -->
+
+          <div class="search-box">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre, código o escanear código de barras..."
+              [(ngModel)]="terminoBusqueda"
+              (input)="alBuscar()"
+              (keyup.enter)="enterBusqueda()"
+              autofocus
+            >
+
+            <button
+              *ngIf="terminoBusqueda"
+              type="button"
+              class="search-clear"
+              title="Limpiar búsqueda"
+              (click)="limpiarBusqueda()"
+            >
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
+
+          </div>
+
+          <div class="scanner-help">
+
+            <i class="bi bi-upc-scan"></i>
+
+            <span>
+              Puedes buscar por nombre, código o utilizar un lector de código de barras.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================== -->
+      <!-- ERROR                                               -->
+      <!-- =================================================== -->
+
+      <div
+        *ngIf="mensajeError"
+        class="alert alert-danger custom-alert"
+      >
+
+        <div class="alert-content">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ mensajeError }}
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          (click)="mensajeError = ''"
+        >
+        </button>
+
+      </div>
+
+
+      <!-- =================================================== -->
+      <!-- VENTA EXITOSA                                       -->
+      <!-- =================================================== -->
+
+      <div
+        *ngIf="ultimaVenta"
+        class="sale-success"
+      >
+
+        <div class="sale-success-icon">
+          <i class="bi bi-check-lg"></i>
+        </div>
+
+        <div class="sale-success-content">
+
+          <span>
+            Venta registrada correctamente
+          </span>
+
+          <strong>
+            {{ ultimaVenta.numero_venta }}
+          </strong>
+
+          <small>
+            Total:
+            {{ formatearPrecio(ultimaVenta.total) }}
+          </small>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          (click)="cerrarResultadoVenta()"
+        >
+        </button>
+
+      </div>
+
+
+      <!-- =================================================== -->
+      <!-- PRODUCTOS                                           -->
+      <!-- =================================================== -->
+
+      <section class="card products-card">
+
+        <!-- HEADER -->
+
+        <div class="section-header">
+
+          <div>
+
+            <h5>
+              Productos
+            </h5>
+
+            <span>
+              Selecciona los productos que deseas vender
+            </span>
+
+          </div>
+
+          <div class="products-count">
+
+            {{ productos.length }}
+
+            {{
+              productos.length === 1
+                ? 'resultado'
+                : 'resultados'
+            }}
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CARGANDO                                          -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="cargandoProductos"
+          class="loading-state"
+        >
+
+          <div
+            class="spinner-border text-primary"
+            role="status"
+          >
+          </div>
+
+          <strong>
+            Cargando productos...
+          </strong>
+
+          <span>
+            Buscando información del catálogo.
+          </span>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- LISTA PRODUCTOS                                   -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="
+            !cargandoProductos &&
+            productos.length > 0
+          "
+          class="products-list"
+        >
+
+          <div
+            *ngFor="
+              let producto of productos;
+              trackBy: trackByProducto
+            "
+            class="product-sale-item"
+            [class.no-stock]="producto.stock_actual <= 0"
+          >
+
+            <!-- INFORMACION -->
+
+            <div class="product-sale-main">
+
+              <div class="product-avatar">
+
+                {{
+                  producto.nombre
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+
+              </div>
+
+              <div class="product-sale-data">
+
+                <strong class="product-name">
+                  {{ producto.nombre }}
+                </strong>
+
+                <div class="product-codes">
+
+                  <span
+                    *ngIf="producto.codigo"
+                  >
+
+                    {{ producto.codigo }}
+
+                  </span>
+
+                  <span
+                    *ngIf="producto.codigo_barra"
+                  >
+
+                    <i class="bi bi-upc-scan"></i>
+
+                    {{ producto.codigo_barra }}
+
+                  </span>
+
+                </div>
+
+                <div class="product-stock">
+
+                  <span
+                    class="stock-dot"
+                    [class.stock-ok]="
+                      !esStockBajo(producto) &&
+                      producto.stock_actual > 0
+                    "
+                    [class.stock-low]="
+                      esStockBajo(producto) &&
+                      producto.stock_actual > 0
+                    "
+                    [class.stock-none]="
+                      producto.stock_actual <= 0
+                    "
+                  >
+                  </span>
+
+                  <span>
+
+                    Stock:
+
+                    <strong>
+                      {{ producto.stock_actual }}
+                    </strong>
+
+                  </span>
+
+                  <small
+                    *ngIf="producto.stock_actual <= 0"
+                    class="no-stock-label"
+                  >
+                    Sin stock
+                  </small>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- PRECIO + AGREGAR -->
+
+            <div class="product-sale-actions">
+
+              <strong class="product-price">
+
+                {{
+                  formatearPrecio(
+                    producto.precio_venta
+                  )
+                }}
+
+              </strong>
+
+              <button
+                type="button"
+                class="btn-add-product"
+                [disabled]="producto.stock_actual <= 0"
+                (click)="agregarProducto(producto)"
+              >
+
+                <i class="bi bi-plus-lg"></i>
+
+                <span>
+                  Agregar
+                </span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SIN RESULTADOS                                    -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="
+            !cargandoProductos &&
+            productos.length === 0
+          "
+          class="empty-products"
+        >
+
+          <div class="empty-icon">
+            <i class="bi bi-search"></i>
+          </div>
+
+          <strong>
+            No encontramos productos
+          </strong>
+
+          <span>
+            Intenta buscar por nombre, código o código de barras.
+          </span>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- ===================================================== -->
+    <!-- COLUMNA DERECHA                                       -->
+    <!-- ===================================================== -->
+
+    <aside class="sale-summary">
+
+      <div class="card cart-card">
+
+        <!-- ================================================= -->
+        <!-- HEADER                                            -->
+        <!-- ================================================= -->
+
+        <div class="cart-header">
+
+          <div>
+
+            <h5>
+              Resumen de venta
+            </h5>
+
+            <span>
+
+              {{ totalUnidades }}
+
+              {{
+                totalUnidades === 1
+                  ? 'unidad'
+                  : 'unidades'
+              }}
+
+            </span>
+
+          </div>
+
+          <button
+            *ngIf="carrito.length > 0"
+            type="button"
+            class="btn-clear-cart"
+            [disabled]="guardando"
+            (click)="vaciarCarrito()"
+          >
+
+            <i class="bi bi-trash"></i>
+
+            <span>
+              Vaciar
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CARRITO VACIO                                     -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="carrito.length === 0"
+          class="empty-cart"
+        >
+
+          <div class="empty-cart-icon">
+            <i class="bi bi-cart"></i>
+          </div>
+
+          <strong>
+            Tu venta está vacía
+          </strong>
+
+          <span>
+            Agrega productos desde el listado para comenzar.
+          </span>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCTOS CARRITO                                 -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="carrito.length > 0"
+          class="cart-items"
+        >
+
+          <div
+            *ngFor="
+              let item of carrito;
+              trackBy: trackByCarrito
+            "
+            class="cart-item"
+          >
+
+            <div class="cart-item-top">
+
+              <div class="cart-item-info">
+
+                <strong>
+                  {{ item.nombre }}
+                </strong>
+
+                <span>
+                  {{ item.codigo || 'Sin código' }}
+                </span>
+
+              </div>
+
+              <button
+                type="button"
+                class="btn-remove"
+                title="Eliminar producto"
+                [disabled]="guardando"
+                (click)="eliminarItem(item)"
+              >
+
+                <i class="bi bi-x-lg"></i>
+
+              </button>
+
+            </div>
+
+
+            <div class="cart-item-bottom">
+
+              <!-- CANTIDAD -->
+
+              <div class="quantity-control">
+
+                <button
+                  type="button"
+                  title="Disminuir"
+                  [disabled]="guardando"
+                  (click)="disminuirCantidad(item)"
+                >
+
+                  <i class="bi bi-dash"></i>
+
+                </button>
+
+                <input
+                  type="number"
+                  min="1"
+                  [max]="item.stock_disponible"
+                  [(ngModel)]="item.cantidad"
+                  [disabled]="guardando"
+                  (change)="validarCantidad(item)"
+                >
+
+                <button
+                  type="button"
+                  title="Aumentar"
+                  [disabled]="
+                    guardando ||
+                    item.cantidad >= item.stock_disponible
+                  "
+                  (click)="aumentarCantidad(item)"
+                >
+
+                  <i class="bi bi-plus"></i>
+
+                </button>
+
+              </div>
+
+
+              <!-- PRECIO -->
+
+              <div class="cart-price">
+
+                <small>
+
+                  {{
+                    formatearPrecio(
+                      item.precio_unitario
+                    )
+                  }}
+                  c/u
+
+                </small>
+
+                <strong>
+
+                  {{
+                    formatearPrecio(
+                      subtotalItem(item)
+                    )
+                  }}
+
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- DATOS CLIENTE                                     -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="carrito.length > 0"
+          class="sale-data"
+        >
+
+          <div class="sale-section-title">
+
+            <div>
+
+              <i class="bi bi-person"></i>
+
+              <strong>
+                Cliente
+              </strong>
+
+            </div>
+
+            <span>
+              Opcional
+            </span>
+
+          </div>
+
+          <div class="row g-2">
+
+            <div class="col-12">
+
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nombre del cliente"
+                [(ngModel)]="clienteNombre"
+                [disabled]="guardando"
+              >
+
+            </div>
+
+            <div class="col-12">
+
+              <input
+                type="text"
+                class="form-control"
+                placeholder="RUT del cliente"
+                [(ngModel)]="clienteRut"
+                [disabled]="guardando"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- ================================================= -->
+          <!-- FORMA DE PAGO                                     -->
+          <!-- ================================================= -->
+
+          <div class="sale-section-title mt-3">
+
+            <div>
+
+              <i class="bi bi-wallet2"></i>
+
+              <strong>
+                Forma de pago
+              </strong>
+
+            </div>
+
+          </div>
+
+          <div class="payment-grid">
+
+            <button
+              *ngFor="let forma of formasPago"
+              type="button"
+              class="payment-option"
+              [class.active]="formaPago === forma.valor"
+              [disabled]="guardando"
+              (click)="formaPago = forma.valor"
+            >
+
+              <i
+                class="bi"
+                [ngClass]="forma.icono"
+              >
+              </i>
+
+              <span>
+                {{ forma.nombre }}
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- ================================================= -->
+          <!-- OBSERVACION                                       -->
+          <!-- ================================================= -->
+
+          <div class="sale-section-title mt-3">
+
+            <div>
+
+              <i class="bi bi-chat-left-text"></i>
+
+              <strong>
+                Observación
+              </strong>
+
+            </div>
+
+            <span>
+              Opcional
+            </span>
+
+          </div>
+
+          <textarea
+            class="form-control observation-input"
+            rows="2"
+            maxlength="500"
+            placeholder="Agregar observación..."
+            [(ngModel)]="observacion"
+            [disabled]="guardando"
+          ></textarea>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- TOTALES                                           -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="carrito.length > 0"
+          class="totals-container"
+        >
+
+          <!-- DESCUENTO -->
+
+          <div class="discount-row">
+
+            <label>
+              Descuento
+            </label>
+
+            <div class="discount-input">
+
+              <span>
+                $
+              </span>
+
+              <input
+                type="number"
+                min="0"
+                [max]="subtotal"
+                [(ngModel)]="descuento"
+                [disabled]="guardando"
+                (change)="validarDescuento()"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- SUBTOTAL -->
+
+          <div class="total-line">
+
+            <span>
+              Subtotal
+            </span>
+
+            <strong>
+              {{ formatearPrecio(subtotal) }}
+            </strong>
+
+          </div>
+
+
+          <!-- DESCUENTO -->
+
+          <div
+            *ngIf="descuentoAplicado > 0"
+            class="total-line discount"
+          >
+
+            <span>
+              Descuento
+            </span>
+
+            <strong>
+
+              -
+              {{
+                formatearPrecio(
+                  descuentoAplicado
+                )
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- TOTAL -->
+
+          <div class="grand-total">
+
+            <div>
+
+              <span>
+                Total
+              </span>
+
+              <small>
+                Total a pagar
+              </small>
+
+            </div>
+
+            <strong>
+              {{ formatearPrecio(total) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- FINALIZAR                                         -->
+        <!-- ================================================= -->
+
+        <div class="cart-footer">
+
+          <button
+            type="button"
+            class="btn btn-primary btn-finalize"
+            [disabled]="
+              guardando ||
+              carrito.length === 0
+            "
+            (click)="finalizarVenta()"
+          >
+
+            <ng-container
+              *ngIf="!guardando"
+            >
+
+              <i class="bi bi-check2-circle"></i>
+
+              <span>
+                Finalizar venta
+              </span>
+
+              <strong>
+                {{ formatearPrecio(total) }}
+              </strong>
+
+            </ng-container>
+
+
+            <ng-container
+              *ngIf="guardando"
+            >
+
+              <span
+                class="
+                  spinner-border
+                  spinner-border-sm
+                "
+                role="status"
+              >
+              </span>
+
+              <span>
+                Registrando venta...
+              </span>
+
+            </ng-container>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>

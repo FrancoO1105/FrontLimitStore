@@ -1,0 +1,436 @@
+:host {
+  display: block;
+}
+
+.dashboard {
+  color: #172b4d;
+  padding: 8px 0 24px;
+}
+
+.dashboard-header,
+.header-actions,
+.metric-heading,
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-header {
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #5064d9;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.dashboard h1 {
+  margin: 0;
+  color: #172b4d;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 750;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.dashboard-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dashboard-button.primary {
+  background: #4659cf;
+  color: #fff;
+}
+
+.dashboard-button.primary:hover {
+  background: #3546af;
+}
+
+.dashboard-button.secondary {
+  background: #fff;
+  border-color: #dce3ed;
+  color: #334155;
+}
+
+.dashboard-button.secondary:hover {
+  background: #f1f5f9;
+}
+
+.dashboard-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.dashboard-button:focus-visible,
+.panel-link:focus-visible,
+.table-container:focus-visible {
+  outline: 3px solid #7c91f5;
+  outline-offset: 3px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.metric-card,
+.dashboard-panel {
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #e5eaf2;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgb(23 43 77 / 4%);
+}
+
+.metric-card {
+  padding: 22px;
+}
+
+.metric-heading {
+  align-items: flex-start;
+  color: #52627a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.metric-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 19px;
+}
+
+.blue {
+  color: #3659cd;
+  background: #eef2ff;
+}
+
+.green {
+  color: #168362;
+  background: #e8f7ef;
+}
+
+.violet {
+  color: #8050c4;
+  background: #f3edfc;
+}
+
+.orange {
+  color: #b56a13;
+  background: #fff4e5;
+}
+
+.metric-value {
+  margin: 18px 0 8px;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 750;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.featured-product {
+  margin: 18px 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.metric-detail {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.period-label {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: #f4f6fa;
+  color: #52627a;
+  font-size: 11px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.panel-heading {
+  flex-wrap: wrap;
+  padding: 22px;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  color: #172b4d;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.panel-heading p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.panel-link {
+  color: #4659cf;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.panel-link:hover {
+  text-decoration: underline;
+}
+
+.table-container {
+  overflow: auto;
+}
+
+.stock-table {
+  max-height: 420px;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 14px 22px;
+  border-bottom: 1px solid #eef1f6;
+  vertical-align: middle;
+}
+
+.dashboard-table th {
+  color: #64748b;
+  background: #fafbfd;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.dashboard-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dashboard-table tbody tr:hover {
+  background: #fafbfd;
+}
+
+.numeric {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.product-name {
+  display: block;
+  min-width: 120px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.product-code {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.quantity-badge,
+.stock-badge {
+  display: inline-block;
+  min-width: 32px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: #eef2ff;
+  color: #3659cd;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quantity-badge.no-sales {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.stock-badge {
+  background: #fff4e5;
+  color: #92530b;
+}
+
+.stock-badge.out-of-stock {
+  background: #fef0ef;
+  color: #b42318;
+}
+
+.empty-state,
+.status-box {
+  padding: 36px 22px;
+  color: #64748b;
+  text-align: center;
+}
+
+.success-state {
+  color: #168362;
+}
+
+.success-state i {
+  font-size: 30px;
+}
+
+.success-state p {
+  margin: 12px 0 0;
+}
+
+.error-box {
+  padding: 22px;
+  border: 1px solid #f2c7c2;
+  border-radius: 12px;
+  background: #fff6f5;
+  color: #a12d23;
+}
+
+.panel-note,
+.dashboard-footnote {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.panel-note {
+  margin: 0;
+  padding: 16px 22px;
+  border-top: 1px solid #eef1f6;
+}
+
+.dashboard-footnote {
+  margin: 20px 0 0;
+}
+
+@media (max-width: 1400px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .details-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 575px) {
+  .metrics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .dashboard-button {
+    flex: 1;
+  }
+
+  .metric-card,
+  .panel-heading {
+    padding: 18px;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 12px 14px;
+  }
+}
+/* Dos tarjetas por fila para dar espacio a los gráficos. */
+.metrics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chart-summary {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eef1f6;
+}
+
+.variation {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.variation.positive {
+  background: #e8f7ef;
+  color: #147452;
+}
+
+.variation.negative {
+  background: #fef0ef;
+  color: #b42318;
+}
+
+.chart-summary p,
+.chart-caption {
+  margin: 10px 0 14px;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.chart-caption {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .metrics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

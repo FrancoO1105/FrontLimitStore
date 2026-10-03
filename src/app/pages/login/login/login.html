@@ -1,0 +1,28 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+
+    <form (ngSubmit)="ingresar()" #formLogin="ngForm" novalidate>
+      <input
+        type="text"
+        placeholder="Usuario"
+        [(ngModel)]="usuario"
+        name="usuario"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+
+      <button type="submit" [disabled]="cargando">
+        {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+
+      <p *ngIf="error" class="error">{{ error }}</p>
+    </form>
+  </div>
+</div>

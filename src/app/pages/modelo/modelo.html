@@ -1,0 +1,1175 @@
+<div class="container-fluid modelos-page">
+
+  <!-- ===================================================== -->
+  <!-- CARD 1: TITULO + BUSCADOR + NUEVO MODELO             -->
+  <!-- ===================================================== -->
+
+  <div class="card main-card mb-4">
+
+    <div class="card-body">
+
+      <!-- TITULO -->
+
+      <div class="page-header">
+
+        <div class="page-header-content">
+
+          <div class="page-icon">
+            <i class="bi bi-boxes"></i>
+          </div>
+
+          <div class="page-heading">
+
+            <h2 class="page-title">
+              Modelos
+            </h2>
+
+            <p class="page-description">
+              Administra los modelos asociados a cada marca.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- SEPARADOR -->
+
+      <div class="card-divider"></div>
+
+
+      <!-- BUSCADOR + NUEVO -->
+
+      <div class="row g-3 align-items-center">
+
+        <!-- BUSCADOR -->
+
+        <div class="col-12 col-lg">
+
+          <div class="search-box">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre del modelo o marca..."
+              [(ngModel)]="busqueda"
+              (input)="buscar()"
+            >
+
+            <button
+              *ngIf="busqueda"
+              type="button"
+              class="search-clear"
+              title="Limpiar búsqueda"
+              (click)="limpiarBusqueda()"
+            >
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- NUEVO MODELO -->
+
+        <div class="col-12 col-lg-auto">
+
+          <button
+            type="button"
+            class="btn btn-primary btn-new w-100"
+            (click)="nuevoModelo()"
+          >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>
+              Nuevo modelo
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- CARD 2: LISTADO                                       -->
+  <!-- ===================================================== -->
+
+  <div class="card table-card">
+
+    <!-- HEADER -->
+
+    <div class="table-card-header">
+
+      <div>
+
+        <h5 class="table-title">
+          Listado de modelos
+        </h5>
+
+        <p class="table-subtitle">
+
+          <strong>
+            {{ modelosFiltrados.length }}
+          </strong>
+
+          modelos encontrados
+
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- CARGANDO                                            -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="cargando"
+      class="loading-state"
+    >
+
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+
+        <span class="visually-hidden">
+          Cargando...
+        </span>
+
+      </div>
+
+      <strong>
+        Cargando modelos...
+      </strong>
+
+      <span>
+        Obteniendo información.
+      </span>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- ERROR                                               -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        mensajeError
+      "
+      class="card-body"
+    >
+
+      <div class="alert alert-danger error-alert mb-0">
+
+        <div class="error-message">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ mensajeError }}
+          </span>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          (click)="listarModelos()"
+        >
+
+          <i class="bi bi-arrow-clockwise me-1"></i>
+
+          Reintentar
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- DESKTOP / TABLET                                    -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        !mensajeError &&
+        modelosFiltrados.length > 0
+      "
+      class="desktop-model-list"
+    >
+
+      <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Modelo
+              </th>
+
+              <th>
+                Marca
+              </th>
+
+              <th class="text-center">
+                Estado
+              </th>
+
+              <th class="text-center action-column">
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let modelo of modelosFiltrados
+              "
+            >
+
+              <!-- MODELO -->
+
+              <td>
+
+                <div class="model-info">
+
+                  <div class="model-avatar">
+
+                    {{
+                      modelo.nombre
+                        ?.charAt(0)
+                        ?.toUpperCase()
+                      || 'M'
+                    }}
+
+                  </div>
+
+
+                  <div class="model-data">
+
+                    <span class="model-name">
+
+                      {{
+                        modelo.nombre ||
+                        'Sin nombre'
+                      }}
+
+                    </span>
+
+                    <span class="model-id">
+                      ID #{{ modelo.id }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- MARCA -->
+
+              <td>
+
+                <span class="brand-badge">
+
+                  <i class="bi bi-tag"></i>
+
+                  {{
+                    modelo.marca ||
+                    'Sin marca'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ESTADO -->
+
+              <td class="text-center">
+
+                <span
+                  class="status-badge"
+                  [class.status-active]="
+                    modelo.estado === 1 ||
+                    modelo.estado === true
+                  "
+                  [class.status-inactive]="
+                    modelo.estado !== 1 &&
+                    modelo.estado !== true
+                  "
+                >
+
+                  <span class="status-dot"></span>
+
+                  {{
+                    modelo.estado === 1 ||
+                    modelo.estado === true
+                      ? 'Activo'
+                      : 'Inactivo'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACCIONES -->
+
+              <td class="text-center">
+
+                <button
+                  type="button"
+                  class="btn-edit"
+                  title="Editar modelo"
+                  (click)="editarModelo(modelo)"
+                >
+
+                  <i class="bi bi-pencil"></i>
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- CELULAR: CARDS                                      -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        !mensajeError &&
+        modelosFiltrados.length > 0
+      "
+      class="mobile-model-list"
+    >
+
+      <div
+        *ngFor="
+          let modelo of modelosFiltrados
+        "
+        class="mobile-model-card"
+      >
+
+        <!-- HEADER CARD -->
+
+        <div class="mobile-model-header">
+
+          <div class="model-info">
+
+            <div class="model-avatar">
+
+              {{
+                modelo.nombre
+                  ?.charAt(0)
+                  ?.toUpperCase()
+                || 'M'
+              }}
+
+            </div>
+
+
+            <div class="model-data">
+
+              <span class="model-name">
+
+                {{
+                  modelo.nombre ||
+                  'Sin nombre'
+                }}
+
+              </span>
+
+              <span class="model-id">
+                ID #{{ modelo.id }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- EDITAR -->
+
+          <button
+            type="button"
+            class="btn-edit"
+            title="Editar modelo"
+            (click)="editarModelo(modelo)"
+          >
+
+            <i class="bi bi-pencil"></i>
+
+          </button>
+
+        </div>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="mobile-card-divider"></div>
+
+
+        <!-- DETALLES -->
+
+        <div class="mobile-model-details">
+
+
+          <!-- MARCA -->
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-tag"></i>
+
+              <span>
+                Marca
+              </span>
+
+            </div>
+
+
+            <div class="mobile-detail-value">
+
+              <span class="brand-badge">
+
+                {{
+                  modelo.marca ||
+                  'Sin marca'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- ESTADO -->
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-circle-half"></i>
+
+              <span>
+                Estado
+              </span>
+
+            </div>
+
+
+            <div class="mobile-detail-value">
+
+              <span
+                class="status-badge"
+                [class.status-active]="
+                  modelo.estado === 1 ||
+                  modelo.estado === true
+                "
+                [class.status-inactive]="
+                  modelo.estado !== 1 &&
+                  modelo.estado !== true
+                "
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  modelo.estado === 1 ||
+                  modelo.estado === true
+                    ? 'Activo'
+                    : 'Inactivo'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- SIN RESULTADOS                                      -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        !mensajeError &&
+        modelosFiltrados.length === 0
+      "
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        <i class="bi bi-box-seam"></i>
+      </div>
+
+
+      <h5>
+        No hay modelos
+      </h5>
+
+
+      <ng-container
+        *ngIf="
+          busqueda;
+          else sinModelos
+        "
+      >
+
+        <p>
+
+          No encontramos resultados para
+
+          <strong>
+            "{{ busqueda }}"
+          </strong>.
+
+        </p>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="limpiarBusqueda()"
+        >
+
+          <i class="bi bi-x-lg me-1"></i>
+
+          Limpiar búsqueda
+
+        </button>
+
+      </ng-container>
+
+
+      <ng-template #sinModelos>
+
+        <p>
+          Todavía no existen modelos registrados.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="nuevoModelo()"
+        >
+
+          <i class="bi bi-plus-lg me-1"></i>
+
+          Nuevo modelo
+
+        </button>
+
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- MODAL NUEVO / EDITAR MODELO                           -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModal"
+  class="modal fade show d-block"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+>
+
+  <div
+    class="
+      modal-dialog
+      modal-dialog-centered
+    "
+  >
+
+    <div
+      class="
+        modal-content
+        border-0
+      "
+    >
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div class="modal-title-content">
+
+          <div class="modal-icon">
+
+            <i
+              class="bi"
+              [class.bi-plus-lg]="!esEdicion"
+              [class.bi-pencil]="esEdicion"
+            ></i>
+
+          </div>
+
+
+          <div class="modal-heading">
+
+            <h5 class="modal-title">
+
+              {{
+                esEdicion
+                  ? 'Editar modelo'
+                  : 'Nuevo modelo'
+              }}
+
+            </h5>
+
+
+            <small>
+
+              {{
+                esEdicion
+                  ? 'Modifique la información del modelo.'
+                  : 'Ingrese los datos para registrar un nuevo modelo.'
+              }}
+
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-close"
+          [disabled]="guardando"
+          (click)="cerrarModal()"
+        >
+        </button>
+
+      </div>
+
+
+      <!-- CARGANDO -->
+
+      <div
+        *ngIf="cargandoModelo"
+        class="modal-loading"
+      >
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+        </div>
+
+        <strong>
+          Cargando modelo...
+        </strong>
+
+      </div>
+
+
+      <!-- FORMULARIO -->
+
+      <form
+        *ngIf="!cargandoModelo"
+        #formModelo="ngForm"
+        (ngSubmit)="guardarModelo()"
+      >
+
+        <div class="modal-body">
+
+
+          <!-- ERROR -->
+
+          <div
+            *ngIf="mensajeErrorModal"
+            class="alert alert-danger modal-alert"
+          >
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              {{ mensajeErrorModal }}
+            </span>
+
+          </div>
+
+
+          <!-- MARCA -->
+
+          <div class="form-group-custom">
+
+            <label class="form-label">
+
+              Marca
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <div class="brand-select-group">
+
+              <select
+                class="form-select"
+                name="id_marca"
+                [(ngModel)]="modeloFormulario.id_marca"
+                required
+              >
+
+                <option
+                  [ngValue]="null"
+                  disabled
+                >
+                  Seleccione una marca
+                </option>
+
+
+                <option
+                  *ngFor="
+                    let marca of marcas
+                  "
+                  [ngValue]="marca.id"
+                >
+
+                  {{ marca.nombre }}
+
+                </option>
+
+              </select>
+
+
+              <button
+                type="button"
+                class="btn-add-brand"
+                title="Agregar nueva marca"
+                (click)="abrirModalMarca()"
+              >
+
+                <i class="bi bi-plus-lg"></i>
+
+              </button>
+
+            </div>
+
+
+            <div class="form-help">
+
+              <i class="bi bi-info-circle"></i>
+
+              <span>
+                Si la marca no existe, puede crearla con el botón +.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- NOMBRE -->
+
+          <div class="form-group-custom">
+
+            <label class="form-label">
+
+              Nombre del modelo
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              type="text"
+              class="form-control"
+              name="nombre"
+              [(ngModel)]="modeloFormulario.nombre"
+              placeholder="Ej: Heavy Cotton"
+              autocomplete="off"
+              required
+            >
+
+          </div>
+
+
+          <!-- ESTADO -->
+
+          <div class="form-group-custom mb-0">
+
+            <label class="form-label">
+              Estado
+            </label>
+
+
+            <select
+              class="form-select"
+              name="estado"
+              [(ngModel)]="modeloFormulario.estado"
+            >
+
+              <option [ngValue]="1">
+                Activo
+              </option>
+
+              <option [ngValue]="0">
+                Inactivo
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-cancel"
+            [disabled]="guardando"
+            (click)="cerrarModal()"
+          >
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-save"
+            [disabled]="
+              guardando ||
+              formModelo.invalid
+            "
+          >
+
+            <ng-container *ngIf="!guardando">
+
+              <i
+                class="bi me-2"
+                [class.bi-plus-lg]="!esEdicion"
+                [class.bi-check-lg]="esEdicion"
+              ></i>
+
+              {{
+                esEdicion
+                  ? 'Guardar cambios'
+                  : 'Crear modelo'
+              }}
+
+            </ng-container>
+
+
+            <ng-container *ngIf="guardando">
+
+              <span
+                class="
+                  spinner-border
+                  spinner-border-sm
+                  me-2
+                "
+                role="status"
+              >
+              </span>
+
+              Guardando...
+
+            </ng-container>
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- BACKDROP MODELO                                       -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModal"
+  class="modal-backdrop fade show"
+>
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- MODAL NUEVA MARCA                                     -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModalMarca"
+  class="
+    modal
+    fade
+    show
+    d-block
+    modal-marca
+  "
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+>
+
+  <div
+    class="
+      modal-dialog
+      modal-dialog-centered
+    "
+  >
+
+    <div
+      class="
+        modal-content
+        border-0
+      "
+    >
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div class="modal-title-content">
+
+          <div class="modal-icon modal-icon-brand">
+
+            <i class="bi bi-tag"></i>
+
+          </div>
+
+
+          <div class="modal-heading">
+
+            <h5 class="modal-title">
+              Nueva marca
+            </h5>
+
+            <small>
+              Registre una nueva marca sin salir del modelo.
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-close"
+          [disabled]="guardandoMarca"
+          (click)="cerrarModalMarca()"
+        >
+        </button>
+
+      </div>
+
+
+      <form
+        #formMarca="ngForm"
+        (ngSubmit)="guardarMarca()"
+      >
+
+        <div class="modal-body">
+
+
+          <!-- ERROR -->
+
+          <div
+            *ngIf="mensajeErrorMarca"
+            class="alert alert-danger modal-alert"
+          >
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              {{ mensajeErrorMarca }}
+            </span>
+
+          </div>
+
+
+          <!-- NOMBRE -->
+
+          <div class="form-group-custom mb-0">
+
+            <label class="form-label">
+
+              Nombre de la marca
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              type="text"
+              class="form-control"
+              name="nombreMarca"
+              [(ngModel)]="nuevaMarca.nombre"
+              placeholder="Ej: Gildan"
+              autocomplete="off"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-cancel"
+            [disabled]="guardandoMarca"
+            (click)="cerrarModalMarca()"
+          >
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-save"
+            [disabled]="
+              guardandoMarca ||
+              formMarca.invalid
+            "
+          >
+
+            <ng-container *ngIf="!guardandoMarca">
+
+              <i class="bi bi-plus-lg me-2"></i>
+
+              Crear marca
+
+            </ng-container>
+
+
+            <ng-container *ngIf="guardandoMarca">
+
+              <span
+                class="
+                  spinner-border
+                  spinner-border-sm
+                  me-2
+                "
+                role="status"
+              >
+              </span>
+
+              Guardando...
+
+            </ng-container>
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- BACKDROP NUEVA MARCA                                  -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModalMarca"
+  class="
+    modal-backdrop
+    fade
+    show
+    backdrop-marca
+  "
+>
+</div>

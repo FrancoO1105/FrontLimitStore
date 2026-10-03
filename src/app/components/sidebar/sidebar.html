@@ -1,0 +1,155 @@
+<!-- ======= Sidebar ======= -->
+<aside
+  id="sidebar"
+  class="sidebar"
+  (click)="cerrarAlNavegar($event)"
+>
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-item">
+  <a
+    class="nav-link"
+    routerLink="/admin/home"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    <i class="bi bi-grid" aria-hidden="true"></i>
+    <span>Home</span>
+  </a>
+</li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" routerLink="/admin/ventas" routerLinkActive="active">
+        <i class="bi bi-shop"></i>
+        <span>Sitema de Ventas</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link"
+         [class.collapsed]="!isOpen('forms-nav')"
+         href="#"
+         (click)="toggle($event, 'forms-nav')">
+        <i class="bi bi-upc-scan"></i><span>Productos</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="forms-nav"
+          class="nav-content collapse"
+          [class.show]="isOpen('forms-nav')"
+          data-bs-parent="#sidebar-nav">
+        <li>
+          <!-- ✅ Navega a lista de productos -->
+          <a [routerLink]="['/admin/lista-productos']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-circle"></i><span>Todos los productos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="auth.isAdmin()" routerLink="/admin/categorias" routerLinkActive="active" >
+            <i class="bi bi-tags"></i>
+            <span>Categorías</span>
+          </a>
+        </li>
+
+        <!-- ⛔️ por ahora no hacen nada -->
+        <li><a *ngIf="auth.isAdmin()" routerLink="/admin/marcas" routerLinkActive="active">
+            <i class="bi bi-award"></i>
+            <span>Marcas</span>
+          </a>
+        </li>
+        <li><a *ngIf="auth.isAdmin()" routerLink="/admin/modelos" routerLinkActive="active"><i class="bi bi-circle"></i><span>Modelos</span></a></li>
+        <li>
+          <a
+            *ngIf="auth.isAdmin()" routerLink="/admin/promociones"
+            routerLinkActive="active"
+          >
+            <i class="bi bi-percent"></i>
+
+            <span>
+              Promociones
+            </span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Productos Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link"
+         [class.collapsed]="!isOpen('inventario-nav')"
+         href="#"
+         (click)="toggle($event, 'inventario-nav')">
+        <i class="bi bi-archive"></i><span>Inventarios</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="inventario-nav"
+          class="nav-content collapse"
+          [class.show]="isOpen('inventario-nav')"
+          data-bs-parent="#sidebar-nav">
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Nuevo Inventario</span></a></li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Historial de Inventarios</span></a></li>
+      </ul>
+    </li><!-- End Inventarios Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link"
+         [class.collapsed]="!isOpen('tables-nav')"
+         href="#"
+         (click)="toggle($event, 'tables-nav')">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Ventas</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="tables-nav"
+          class="nav-content collapse"
+          [class.show]="isOpen('tables-nav')"
+          data-bs-parent="#sidebar-nav">
+       <li><a routerLink="/admin/ventas" routerLinkActive="active">
+          <i class="bi bi-cart3"></i>
+          <span>
+            Ventas
+          </span>
+        </a>
+      </li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+      </ul>
+    </li><!-- End Ventas Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link"
+         [class.collapsed]="!isOpen('charts-nav')"
+         href="#"
+         (click)="toggle($event, 'charts-nav')">
+        <i class="bi bi-bar-chart"></i><span>Reportes</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="charts-nav"
+          class="nav-content collapse"
+          [class.show]="isOpen('charts-nav')"
+          data-bs-parent="#sidebar-nav">
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Ventas</span></a></li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Rentabilidad</span></a></li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Inventario</span></a></li>
+      </ul>
+    </li><!-- End Reportes Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link"
+         [class.collapsed]="!isOpen('icons-nav')"
+         href="#"
+         (click)="toggle($event, 'icons-nav')">
+        <i class="bi bi-gem"></i><span>Icons</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="icons-nav"
+          class="nav-content collapse"
+          [class.show]="isOpen('icons-nav')"
+          data-bs-parent="#sidebar-nav">
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Bootstrap Icons</span></a></li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Remix Icons</span></a></li>
+        <li><a href="#" (click)="$event.preventDefault()"><i class="bi bi-circle"></i><span>Boxicons</span></a></li>
+      </ul>
+    </li><!-- End Icons Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" (click)="logout($event)">
+        <i class="bi bi-box-arrow-in-right"></i><span>Salir</span>
+      </a>
+    </li>
+
+  </ul>
+
+</aside><!-- End Sidebar-->

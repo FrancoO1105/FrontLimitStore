@@ -1,0 +1,269 @@
+<section
+  class="caja-panel"
+  *ngIf="auth.isAdmin() || habilitado || error || ocupado"
+  [attr.aria-busy]="ocupado"
+>
+  <header class="caja-header">
+    <div>
+      <h3>Control de caja</h3>
+
+      <p *ngIf="estadoConocido">
+        {{
+          !habilitado
+            ? 'Desactivado: puedes vender sin abrir caja.'
+            : caja
+              ? 'Caja #' + caja.id + ' abierta'
+              : 'Debes abrir caja antes de vender.'
+        }}
+      </p>
+    </div>
+
+    <div class="caja-actions">
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        [disabled]="ocupado || ventaEnCurso"
+        (click)="actualizar()"
+      >
+        {{ ocupado ? 'Actualizando...' : 'Actualizar' }}
+      </button>
+
+      <button
+        *ngIf="auth.isAdmin() && estadoConocido"
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        [disabled]="
+          ocupado || ventaEnCurso || !!caja ||
+          formulario !== 'ninguno'
+        "
+        (click)="cambiarControl()"
+      >
+        {{ habilitado ? 'Desactivar control' : 'Activar control' }}
+      </button>
+    </div>
+  </header>
+
+  <p class="caja-error" *ngIf="error" role="alert">
+    {{ error }}
+  </p>
+
+  <p class="caja-success" *ngIf="mensaje" role="status">
+    {{ mensaje }}
+  </p>
+
+  <ng-container *ngIf="habilitado && estadoConocido">
+
+    <p *ngIf="caja" class="caja-responsable">
+      Apertura:
+      {{ caja.fecha_apertura | date:'dd/MM/yyyy HH:mm' }}
+      · Responsable:
+      {{ caja.responsable_nombres }}
+      {{ caja.responsable_apellido }}
+    </p>
+
+    <div class="caja-totales" *ngIf="resumen as r">
+      <div>
+        <span>Efectivo inicial</span>
+        <strong>{{ moneda(r.monto_inicial) }}</strong>
+      </div>
+
+      <div>
+        <span>Ventas en efectivo</span>
+        <strong>{{ moneda(r.ventas_efectivo) }}</strong>
+      </div>
+
+      <div>
+        <span>Ingresos / retiros</span>
+        <strong>
+          {{ moneda(r.ingresos) }} / {{ moneda(r.retiros) }}
+        </strong>
+      </div>
+
+      <div class="saldo">
+        <span>Efectivo esperado</span>
+        <strong>{{ moneda(r.efectivo_esperado) }}</strong>
+      </div>
+    </div>
+
+    <p *ngIf="resumen as r" class="caja-otros-pagos">
+      Débito: {{ moneda(r.ventas_debito) }}
+      · Crédito: {{ moneda(r.ventas_credito) }}
+      · Transferencia: {{ moneda(r.ventas_transferencia) }}
+    </p>
+
+    <div
+      class="caja-actions"
+      *ngIf="auth.isAdmin() && formulario === 'ninguno'"
+    >
+      <button
+        *ngIf="!caja"
+        type="button"
+        class="btn btn-primary btn-sm"
+        [disabled]="ocupado || ventaEnCurso"
+        (click)="mostrarFormulario('apertura')"
+      >
+        Abrir caja
+      </button>
+
+      <ng-container *ngIf="caja">
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          [disabled]="ocupado || ventaEnCurso"
+          (click)="mostrarFormulario('movimiento')"
+        >
+          Registrar ingreso o retiro
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          [disabled]="ocupado || ventaEnCurso"
+          (click)="mostrarFormulario('cierre')"
+        >
+          Cerrar caja
+        </button>
+      </ng-container>
+    </div>
+
+    <p
+      *ngIf="!caja && !auth.isAdmin()"
+      class="caja-responsable"
+    >
+      Un administrador debe abrir la caja para comenzar a vender.
+    </p>
+
+    <p *ngIf="caja && auth.isAdmin()" class="caja-ayuda">
+      Para desactivar el control, primero cierra la caja.
+    </p>
+  </ng-container>
+
+  <form
+    *ngIf="formulario !== 'ninguno' && auth.isAdmin()"
+    class="caja-form"
+    (ngSubmit)="guardar()"
+  >
+    <fieldset [disabled]="ocupado || ventaEnCurso">
+      <legend>
+        {{
+          formulario === 'apertura'
+            ? 'Abrir caja'
+            : formulario === 'movimiento'
+              ? 'Movimiento de efectivo'
+              : 'Cerrar y cuadrar caja'
+        }}
+      </legend>
+
+      <div *ngIf="formulario === 'movimiento'" class="form-group">
+        <label for="caja-tipo">Tipo de movimiento</label>
+        <select
+          id="caja-tipo"
+          name="tipo"
+          class="form-control"
+          [(ngModel)]="tipoMovimiento"
+        >
+          <option value="INGRESO">Ingreso de efectivo</option>
+          <option value="RETIRO">Retiro de efectivo</option>
+        </select>
+      </div>
+
+      <p *ngIf="formulario === 'cierre' && esperadoCierre !== null">
+        Efectivo esperado: <strong>{{ moneda(esperadoCierre) }}</strong>
+      </p>
+
+      <div class="form-group">
+        <label for="caja-monto">
+          {{
+            formulario === 'apertura'
+              ? 'Efectivo inicial'
+              : formulario === 'cierre'
+                ? 'Efectivo contado físicamente'
+                : 'Monto del movimiento'
+          }}
+        </label>
+
+        <input
+          id="caja-monto"
+          name="monto"
+          class="form-control"
+          type="number"
+          step="1"
+          [min]="formulario === 'movimiento' ? 1 : 0"
+          max="9999999999"
+          required
+          [(ngModel)]="monto"
+        >
+      </div>
+
+      <p
+        *ngIf="formulario === 'cierre' && diferencia !== null"
+        [class.caja-error]="diferencia !== 0"
+        [class.caja-success]="diferencia === 0"
+      >
+        Diferencia: {{ moneda(diferencia) }}
+        · {{
+          diferencia === 0
+            ? 'Cuadrada'
+            : diferencia < 0
+              ? 'Falta efectivo'
+              : 'Sobra efectivo'
+        }}
+      </p>
+
+      <div class="form-group">
+        <label for="caja-observacion">
+          {{ formulario === 'movimiento' ? 'Motivo obligatorio' : 'Observación' }}
+        </label>
+
+        <textarea
+          id="caja-observacion"
+          name="observacion"
+          class="form-control"
+          rows="2"
+          maxlength="500"
+          [(ngModel)]="observacion"
+          [required]="
+            formulario === 'movimiento' ||
+            (formulario === 'cierre' && diferencia !== 0)
+          "
+        ></textarea>
+      </div>
+
+      <p *ngIf="formulario === 'cierre'" class="caja-ayuda">
+        Confirma después de contar el efectivo. El cierre queda registrado
+        y no podrás agregar nuevas operaciones a esta caja.
+      </p>
+
+      <div class="caja-actions">
+        <button type="submit" class="btn btn-primary btn-sm">
+          {{
+            ocupado
+              ? 'Guardando...'
+              : formulario === 'cierre'
+                ? 'Confirmar cierre'
+                : 'Guardar'
+          }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          (click)="cancelar()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </fieldset>
+  </form>
+
+  <div *ngIf="ultimoCierre as cierre" class="caja-comprobante">
+    <strong>
+      Caja #{{ cierre.caja.id }} cerrada · {{ cierre.resultado }}
+    </strong>
+    <p>
+      Esperado: {{ moneda(cierre.caja.efectivo_esperado) }}
+      · Contado: {{ moneda(cierre.caja.efectivo_contado) }}
+      · Diferencia: {{ moneda(cierre.caja.diferencia) }}
+    </p>
+  </div>
+</section>

@@ -1,0 +1,1112 @@
+<div class="container-fluid marcas-page">
+
+  <!-- ===================================================== -->
+  <!-- CARD 1: TITULO + BUSCADOR + NUEVA MARCA              -->
+  <!-- ===================================================== -->
+
+  <div class="card main-card mb-4">
+
+    <div class="card-body">
+
+      <!-- TITULO -->
+
+      <div class="page-header-content">
+
+        <div class="page-icon">
+          <i class="bi bi-tags"></i>
+        </div>
+
+        <div class="page-heading">
+
+          <h2 class="page-title">
+            Marcas
+          </h2>
+
+          <p class="page-description">
+            Administra las marcas disponibles para tus productos.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- SEPARADOR -->
+
+      <div class="card-divider"></div>
+
+
+      <!-- BUSCADOR + BOTON -->
+
+      <div class="row g-3 align-items-center">
+
+        <!-- BUSCADOR -->
+
+        <div class="col-12 col-lg">
+
+          <div class="search-box">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar marca..."
+              [(ngModel)]="terminoBusqueda"
+              (input)="filtrar()"
+            >
+
+            <button
+              *ngIf="terminoBusqueda"
+              type="button"
+              class="search-clear"
+              title="Limpiar búsqueda"
+              (click)="limpiarBusqueda()"
+            >
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- NUEVA MARCA -->
+
+        <div class="col-12 col-lg-auto">
+
+          <button
+            type="button"
+            class="btn btn-primary btn-new w-100"
+            (click)="abrirNueva()"
+          >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>
+              Nueva marca
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- MENSAJE EXITO                                         -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="mensajeExito"
+    class="alert alert-success custom-alert"
+  >
+
+    <div class="alert-content">
+
+      <i class="bi bi-check-circle"></i>
+
+      <span>
+        {{ mensajeExito }}
+      </span>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="mensajeExito = ''"
+    >
+    </button>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- MENSAJE ERROR                                         -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="mensajeError"
+    class="alert alert-danger custom-alert"
+  >
+
+    <div class="alert-content">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ mensajeError }}
+      </span>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="mensajeError = ''"
+    >
+    </button>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- CARD 2: LISTADO                                       -->
+  <!-- ===================================================== -->
+
+  <div class="card table-card">
+
+    <!-- HEADER -->
+
+    <div class="table-card-header">
+
+      <div>
+
+        <h5 class="table-title">
+          Listado de marcas
+        </h5>
+
+        <p class="table-subtitle">
+
+          <strong>
+            {{ marcasFiltradas.length }}
+          </strong>
+
+          marcas encontradas
+
+        </p>
+
+      </div>
+
+
+      <!-- CANTIDAD REGISTROS -->
+
+      <div class="records-wrapper">
+
+        <label>
+          Mostrar
+        </label>
+
+        <select
+          class="form-select"
+          [(ngModel)]="registrosPorPagina"
+          (change)="cambiarCantidad()"
+        >
+
+          <option [ngValue]="5">
+            5
+          </option>
+
+          <option [ngValue]="10">
+            10
+          </option>
+
+          <option [ngValue]="20">
+            20
+          </option>
+
+          <option [ngValue]="50">
+            50
+          </option>
+
+        </select>
+
+        <span>
+          registros
+        </span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- CARGANDO                                            -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="cargando"
+      class="loading-state"
+    >
+
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+
+        <span class="visually-hidden">
+          Cargando...
+        </span>
+
+      </div>
+
+      <strong>
+        Cargando marcas...
+      </strong>
+
+      <span>
+        Obteniendo información.
+      </span>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- DESKTOP / TABLET                                    -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        marcasPaginadas.length > 0
+      "
+      class="desktop-brand-list"
+    >
+
+      <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Marca
+              </th>
+
+              <th>
+                Fecha de registro
+              </th>
+
+              <th class="text-center">
+                Estado
+              </th>
+
+              <th class="text-center action-column">
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let item of marcasPaginadas;
+                trackBy: trackById
+              "
+            >
+
+              <!-- MARCA -->
+
+              <td>
+
+                <div class="brand-info">
+
+                  <div class="brand-avatar">
+
+                    {{
+                      item.nombre.charAt(0).toUpperCase()
+                      || 'M'
+                    }}
+
+                  </div>
+
+
+                  <div class="brand-data">
+
+                    <span class="brand-name">
+
+                      {{
+                        item.nombre ||
+                        'Sin nombre'
+                      }}
+
+                    </span>
+
+                    <span class="brand-id">
+                      ID #{{ item.id }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- FECHA -->
+
+              <td>
+
+                <div class="date-info">
+
+                  <i class="bi bi-calendar3"></i>
+
+                  <span>
+
+                    {{
+                      item.fecha_registro
+                        | date:'dd/MM/yyyy HH:mm'
+                    }}
+
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- ESTADO -->
+
+              <td class="text-center">
+
+                <span
+                  class="status-badge"
+                  [class.status-active]="
+                    item.estado === 1
+                  "
+                  [class.status-inactive]="
+                    item.estado === 0
+                  "
+                >
+
+                  <span class="status-dot"></span>
+
+                  {{
+                    item.estado === 1
+                      ? 'Activa'
+                      : 'Inactiva'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACCIONES -->
+
+              <td class="text-center">
+
+                <div class="actions">
+
+                  <!-- EDITAR -->
+
+                  <button
+                    type="button"
+                    class="btn-action btn-edit"
+                    title="Editar marca"
+                    (click)="editar(item)"
+                  >
+
+                    <i class="bi bi-pencil"></i>
+
+                  </button>
+
+
+                  <!-- ACTIVAR / DESACTIVAR -->
+
+                  <button
+                    type="button"
+                    class="btn-action"
+                    [class.btn-disable]="
+                      item.estado === 1
+                    "
+                    [class.btn-enable]="
+                      item.estado === 0
+                    "
+                    [title]="
+                      item.estado === 1
+                        ? 'Desactivar marca'
+                        : 'Activar marca'
+                    "
+                    (click)="cambiarEstado(item)"
+                  >
+
+                    <i
+                      class="bi"
+                      [class.bi-toggle-on]="
+                        item.estado === 1
+                      "
+                      [class.bi-toggle-off]="
+                        item.estado === 0
+                      "
+                    >
+                    </i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- CELULAR: UNA CARD POR MARCA                         -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        marcasPaginadas.length > 0
+      "
+      class="mobile-brand-list"
+    >
+
+      <div
+        *ngFor="
+          let item of marcasPaginadas;
+          trackBy: trackById
+        "
+        class="mobile-brand-card"
+      >
+
+        <!-- HEADER CARD -->
+
+        <div class="mobile-brand-header">
+
+          <div class="brand-info">
+
+            <div class="brand-avatar">
+
+              {{
+                item.nombre.charAt(0).toUpperCase()
+                || 'M'
+              }}
+
+            </div>
+
+
+            <div class="brand-data">
+
+              <span class="brand-name">
+
+                {{
+                  item.nombre ||
+                  'Sin nombre'
+                }}
+
+              </span>
+
+              <span class="brand-id">
+                ID #{{ item.id }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- EDITAR -->
+
+          <button
+            type="button"
+            class="btn-action btn-edit"
+            title="Editar marca"
+            (click)="editar(item)"
+          >
+
+            <i class="bi bi-pencil"></i>
+
+          </button>
+
+        </div>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="mobile-card-divider"></div>
+
+
+        <!-- DATOS -->
+
+        <div class="mobile-brand-details">
+
+          <!-- ESTADO -->
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-circle-half"></i>
+
+              <span>
+                Estado
+              </span>
+
+            </div>
+
+
+            <div class="mobile-detail-value">
+
+              <span
+                class="status-badge"
+                [class.status-active]="
+                  item.estado === 1
+                "
+                [class.status-inactive]="
+                  item.estado === 0
+                "
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  item.estado === 1
+                    ? 'Activa'
+                    : 'Inactiva'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- FECHA -->
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-calendar3"></i>
+
+              <span>
+                Registro
+              </span>
+
+            </div>
+
+
+            <div class="mobile-detail-value mobile-date">
+
+              {{
+                item.fecha_registro
+                  | date:'dd/MM/yyyy HH:mm'
+              }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACCION ESTADO -->
+
+        <div class="mobile-card-actions">
+
+          <button
+            type="button"
+            class="btn-status-action"
+            [class.btn-status-disable]="
+              item.estado === 1
+            "
+            [class.btn-status-enable]="
+              item.estado === 0
+            "
+            (click)="cambiarEstado(item)"
+          >
+
+            <i
+              class="bi"
+              [class.bi-toggle-on]="
+                item.estado === 1
+              "
+              [class.bi-toggle-off]="
+                item.estado === 0
+              "
+            >
+            </i>
+
+            {{
+              item.estado === 1
+                ? 'Desactivar marca'
+                : 'Activar marca'
+            }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- SIN RESULTADOS                                      -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        marcasPaginadas.length === 0
+      "
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        <i class="bi bi-tags"></i>
+      </div>
+
+
+      <h5>
+        No hay marcas
+      </h5>
+
+
+      <ng-container
+        *ngIf="
+          terminoBusqueda;
+          else sinMarcas
+        "
+      >
+
+        <p>
+
+          No encontramos resultados para
+
+          <strong>
+            "{{ terminoBusqueda }}"
+          </strong>.
+
+        </p>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="limpiarBusqueda()"
+        >
+
+          <i class="bi bi-x-lg me-1"></i>
+
+          Limpiar búsqueda
+
+        </button>
+
+      </ng-container>
+
+
+      <ng-template #sinMarcas>
+
+        <p>
+          Todavía no existen marcas registradas.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="abrirNueva()"
+        >
+
+          <i class="bi bi-plus-lg me-1"></i>
+
+          Nueva marca
+
+        </button>
+
+      </ng-template>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- PAGINACION                                          -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        marcasFiltradas.length > 0
+      "
+      class="pagination-wrapper"
+    >
+
+      <div class="pagination-info">
+
+        Mostrando
+
+        <strong>
+          {{
+            (paginaActual - 1) *
+            registrosPorPagina + 1
+          }}
+        </strong>
+
+        a
+
+        <strong>
+
+          {{
+            paginaActual *
+            registrosPorPagina >
+            marcasFiltradas.length
+
+              ? marcasFiltradas.length
+
+              : paginaActual *
+                registrosPorPagina
+          }}
+
+        </strong>
+
+        de
+
+        <strong>
+          {{ marcasFiltradas.length }}
+        </strong>
+
+        registros
+
+      </div>
+
+
+      <nav>
+
+        <ul class="pagination mb-0">
+
+          <!-- ANTERIOR -->
+
+          <li
+            class="page-item"
+            [class.disabled]="
+              paginaActual === 1
+            "
+          >
+
+            <button
+              type="button"
+              class="page-link"
+              [disabled]="
+                paginaActual === 1
+              "
+              (click)="
+                cambiarPagina(
+                  paginaActual - 1
+                )
+              "
+            >
+
+              <i class="bi bi-chevron-left"></i>
+
+            </button>
+
+          </li>
+
+
+          <!-- PAGINA ACTUAL -->
+
+          <li class="page-item active">
+
+            <span class="page-link">
+              {{ paginaActual }}
+            </span>
+
+          </li>
+
+
+          <!-- TOTAL PAGINAS -->
+
+          <li class="page-item disabled">
+
+            <span class="page-link">
+              de {{ totalPaginas }}
+            </span>
+
+          </li>
+
+
+          <!-- SIGUIENTE -->
+
+          <li
+            class="page-item"
+            [class.disabled]="
+              paginaActual === totalPaginas
+            "
+          >
+
+            <button
+              type="button"
+              class="page-link"
+              [disabled]="
+                paginaActual === totalPaginas
+              "
+              (click)="
+                cambiarPagina(
+                  paginaActual + 1
+                )
+              "
+            >
+
+              <i class="bi bi-chevron-right"></i>
+
+            </button>
+
+          </li>
+
+        </ul>
+
+      </nav>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- MODAL NUEVA / EDITAR MARCA                            -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModal"
+  class="modal-backdrop-custom"
+  (click)="cerrarModal()"
+>
+
+  <div
+    class="modal-dialog-custom"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-content-custom">
+
+      <!-- HEADER -->
+
+      <div class="modal-header-custom">
+
+        <div class="modal-title-content">
+
+          <div class="modal-icon">
+
+            <i
+              class="bi"
+              [class.bi-plus-lg]="!editando"
+              [class.bi-pencil]="editando"
+            >
+            </i>
+
+          </div>
+
+
+          <div class="modal-heading">
+
+            <h2>
+
+              {{
+                editando
+                  ? 'Editar marca'
+                  : 'Nueva marca'
+              }}
+
+            </h2>
+
+            <p>
+
+              {{
+                editando
+                  ? 'Modifique la información de la marca.'
+                  : 'Ingrese los datos para registrar una nueva marca.'
+              }}
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          [disabled]="guardando"
+          (click)="cerrarModal()"
+        >
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+
+
+      <!-- BODY -->
+
+      <div class="modal-body-custom">
+
+        <!-- NOMBRE -->
+
+        <div class="form-group-custom">
+
+          <label
+            for="nombreMarca"
+            class="form-label"
+          >
+
+            Nombre de la marca
+
+            <span class="required">
+              *
+            </span>
+
+          </label>
+
+
+          <input
+            id="nombreMarca"
+            type="text"
+            class="form-control"
+            maxlength="100"
+            placeholder="Ej: Samsung"
+            [(ngModel)]="marca.nombre"
+          >
+
+
+          <div class="form-help">
+
+            <i class="bi bi-info-circle"></i>
+
+            <span>
+              Máximo 100 caracteres.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- ESTADO -->
+
+        <div class="form-group-custom mb-0">
+
+          <label
+            for="estadoMarca"
+            class="form-label"
+          >
+            Estado
+          </label>
+
+
+          <select
+            id="estadoMarca"
+            class="form-select"
+            [(ngModel)]="marca.estado"
+          >
+
+            <option [ngValue]="1">
+              Activa
+            </option>
+
+            <option [ngValue]="0">
+              Inactiva
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- FOOTER -->
+
+      <div class="modal-footer-custom">
+
+        <button
+          type="button"
+          class="btn btn-cancel"
+          [disabled]="guardando"
+          (click)="cerrarModal()"
+        >
+
+          Cancelar
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn btn-primary btn-save"
+          [disabled]="guardando"
+          (click)="guardar()"
+        >
+
+          <ng-container *ngIf="!guardando">
+
+            <i
+              class="bi me-2"
+              [class.bi-plus-lg]="!editando"
+              [class.bi-check-lg]="editando"
+            >
+            </i>
+
+            {{
+              editando
+                ? 'Guardar cambios'
+                : 'Crear marca'
+            }}
+
+          </ng-container>
+
+
+          <ng-container *ngIf="guardando">
+
+            <span
+              class="
+                spinner-border
+                spinner-border-sm
+                me-2
+              "
+            >
+            </span>
+
+            Guardando...
+
+          </ng-container>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,1785 @@
+:host {
+  display: block;
+
+  --primary: #0d6efd;
+  --primary-hover: #0b5ed7;
+  --primary-soft: #eef5ff;
+
+  --surface: #ffffff;
+
+  --text: #252a31;
+  --text-secondary: #737b84;
+
+  --border: #e5e9ef;
+  --border-soft: #eef1f4;
+
+  --success: #198754;
+  --success-soft: #eaf8f1;
+
+  --danger: #dc3545;
+  --danger-soft: #fff0ef;
+}
+
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+
+.promociones-page {
+  max-width: 1500px;
+
+  padding-top: 24px;
+
+  padding-bottom: 40px;
+}
+
+
+.card {
+  border: 1px solid var(--border) !important;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 3px 16px
+    rgba(22, 30, 45, 0.045);
+}
+
+
+/* =====================================================
+   CARD 1
+===================================================== */
+
+.main-card .card-body {
+  padding: 24px;
+}
+
+
+.page-header-content {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.page-icon {
+  width: 48px;
+
+  height: 48px;
+
+  min-width: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: var(--primary-soft);
+
+  color: var(--primary);
+
+  font-size: 1.25rem;
+}
+
+
+.page-heading {
+  min-width: 0;
+}
+
+
+.page-title {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 1.45rem;
+
+  font-weight: 700;
+
+  letter-spacing: -0.4px;
+}
+
+
+.page-description {
+  margin: 3px 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: 0.86rem;
+}
+
+
+.card-divider {
+  height: 1px;
+
+  margin: 21px 0;
+
+  background: var(--border-soft);
+}
+
+
+/* =====================================================
+   BUSCADOR
+===================================================== */
+
+.search-box {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.search-box .form-control {
+  min-height: 46px;
+
+  padding-left: 45px;
+
+  padding-right: 45px;
+
+  border: 1px solid #dce1e8;
+
+  border-radius: 10px;
+}
+
+
+.search-icon {
+  position: absolute;
+
+  left: 16px;
+
+  z-index: 2;
+
+  color: #9198a1;
+}
+
+
+.search-clear {
+  position: absolute;
+
+  right: 7px;
+
+  width: 32px;
+
+  height: 32px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  background: transparent;
+
+  color: #8a9199;
+}
+
+
+.search-clear:hover {
+  background: #f1f3f5;
+
+  color: #333;
+}
+
+
+.btn-new {
+  min-height: 46px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 20px;
+
+  border-radius: 10px;
+
+  font-size: 0.9rem;
+
+  font-weight: 600;
+
+  box-shadow:
+    0 4px 12px
+    rgba(13, 110, 253, 0.16);
+}
+
+
+/* =====================================================
+   ALERTAS
+===================================================== */
+
+.custom-alert {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+
+  border-radius: 11px;
+
+  font-size: 0.84rem;
+}
+
+
+.alert-content {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+/* =====================================================
+   LISTADO
+===================================================== */
+
+.table-card {
+  overflow: hidden;
+}
+
+
+.table-card-header {
+  padding: 20px 24px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.table-title {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 1rem;
+
+  font-weight: 700;
+}
+
+
+.table-subtitle {
+  margin: 4px 0 0;
+
+  color: var(--text-secondary);
+
+  font-size: 0.8rem;
+}
+
+
+.records-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.78rem;
+}
+
+
+.records-wrapper .form-select {
+  width: auto;
+
+  min-width: 70px;
+
+  min-height: 38px;
+
+  font-size: 0.78rem;
+}
+
+
+/* =====================================================
+   TABLA
+===================================================== */
+
+.desktop-promotion-list {
+  display: block;
+}
+
+
+.mobile-promotion-list {
+  display: none;
+}
+
+
+.table > :not(caption) > * > * {
+  padding: 14px 24px;
+
+  vertical-align: middle;
+
+  border-color: var(--border-soft);
+}
+
+
+.table thead th {
+  background: #f8f9fb;
+
+  color: #717984;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+.promotion-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+
+.promotion-avatar {
+  width: 42px;
+
+  height: 42px;
+
+  min-width: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: var(--primary-soft);
+
+  color: var(--primary);
+
+  font-weight: 700;
+}
+
+
+.promotion-data {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+
+.promotion-name {
+  color: #32373d;
+
+  font-size: 0.9rem;
+
+  font-weight: 600;
+}
+
+
+.promotion-id {
+  margin-top: 2px;
+
+  color: #969da5;
+
+  font-size: 0.72rem;
+}
+
+
+/* =====================================================
+   TIPO
+===================================================== */
+
+.type-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 10px;
+
+  border: 1px solid #e2e6eb;
+
+  border-radius: 8px;
+
+  background: #f8f9fb;
+
+  color: #555d66;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+}
+
+
+.promotion-value {
+  color: #242a31;
+
+  font-size: 0.86rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+.products-count {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 10px;
+
+  border-radius: 8px;
+
+  background: var(--primary-soft);
+
+  color: var(--primary);
+
+  font-size: 0.76rem;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   FECHAS
+===================================================== */
+
+.date-range {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  color: #676f78;
+
+  font-size: 0.73rem;
+}
+
+
+.date-range span {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+
+.date-range i {
+  color: #9ba2aa;
+}
+
+
+.date-range small {
+  padding-left: 18px;
+
+  color: #9ba2aa;
+
+  font-size: 0.65rem;
+}
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+.status-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 11px;
+
+  border-radius: 20px;
+
+  font-size: 0.77rem;
+
+  font-weight: 600;
+}
+
+
+.status-dot {
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+
+.status-active {
+  color: #137348;
+
+  background: var(--success-soft);
+}
+
+
+.status-active .status-dot {
+  background: var(--success);
+}
+
+
+.status-inactive {
+  color: #b42318;
+
+  background: var(--danger-soft);
+}
+
+
+.status-inactive .status-dot {
+  background: var(--danger);
+}
+
+
+/* =====================================================
+   ACCIONES
+===================================================== */
+
+.actions {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 7px;
+}
+
+
+.btn-action {
+  width: 36px;
+
+  height: 36px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #dce2eb;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #6b737d;
+}
+
+
+.btn-edit {
+  color: var(--primary);
+}
+
+
+.btn-edit:hover {
+  background: var(--primary-soft);
+
+  border-color: #aacbff;
+}
+
+
+.btn-disable:hover {
+  background: #fff1f1;
+
+  color: #c84343;
+}
+
+
+.btn-enable:hover {
+  background: #ecf9f3;
+
+  color: #16805a;
+}
+
+
+.small-spinner {
+  width: 15px;
+
+  height: 15px;
+
+  border: 2px solid currentColor;
+
+  border-top-color: transparent;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading-state,
+.modal-loading {
+  min-height: 260px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  color: var(--text-secondary);
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-state {
+  min-height: 320px;
+
+  padding: 40px 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+
+.empty-icon {
+  width: 62px;
+
+  height: 62px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border-radius: 18px;
+
+  background: #f2f4f7;
+
+  color: #8d949d;
+
+  font-size: 1.6rem;
+}
+
+
+/* =====================================================
+   PAGINACION
+===================================================== */
+
+.pagination-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 15px 24px;
+
+  border-top: 1px solid var(--border);
+
+  background: #fafbfc;
+}
+
+
+.pagination-info {
+  color: var(--text-secondary);
+
+  font-size: 0.77rem;
+}
+
+
+.pagination {
+  display: flex;
+
+  gap: 5px;
+}
+
+
+.pagination button {
+  min-width: 34px;
+
+  height: 34px;
+
+  border: 1px solid #dce2eb;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  color: #5f6770;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+}
+
+
+.pagination button.active {
+  border-color: var(--primary);
+
+  background: var(--primary);
+
+  color: #fff;
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  overflow-y: auto;
+
+  background: rgba(24, 32, 42, 0.48);
+
+  backdrop-filter: blur(2px);
+}
+
+
+.modal-dialog-custom {
+  width: 100%;
+  max-width: 900px;
+
+  max-height: calc(100vh - 40px);
+
+  display: flex;
+}
+
+
+.modal-content-custom {
+  width: 100%;
+
+  max-height: calc(100vh - 40px);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  background: #fff;
+
+  box-shadow:
+    0 24px 65px
+    rgba(0, 0, 0, 0.18);
+}
+
+
+/* =====================================================
+   FORM DENTRO DEL MODAL
+===================================================== */
+
+.modal-content-custom > form {
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER MODAL
+===================================================== */
+
+.modal-header-custom {
+  flex-shrink: 0;
+
+  padding: 20px 24px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom:
+    1px solid
+    var(--border-soft);
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fcfdff 100%
+    );
+}
+
+
+/* =====================================================
+   BODY MODAL
+===================================================== */
+
+.modal-body-custom {
+  flex: 1;
+
+  min-height: 0;
+
+  padding: 24px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+  scrollbar-color: #c9ced5 transparent;
+}
+
+
+.modal-body-custom::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.modal-body-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.modal-body-custom::-webkit-scrollbar-thumb {
+  background: #c9ced5;
+
+  border-radius: 10px;
+}
+
+
+.modal-body-custom::-webkit-scrollbar-thumb:hover {
+  background: #aeb5be;
+}
+
+
+/* =====================================================
+   FOOTER MODAL
+===================================================== */
+
+.modal-footer-custom {
+  flex-shrink: 0;
+
+  padding: 15px 24px;
+
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  border-top:
+    1px solid
+    var(--border-soft);
+
+  background: #fafbfc;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.form-label {
+  margin-bottom: 7px;
+
+  color: #424850;
+
+  font-size: 0.86rem;
+
+  font-weight: 600;
+}
+
+
+.required {
+  color: var(--danger);
+}
+
+
+.form-control,
+.form-select,
+.input-group-text {
+  min-height: 45px;
+
+  border-color: #dce1e8;
+
+  font-size: 0.88rem;
+}
+
+
+textarea.form-control {
+  min-height: 85px;
+}
+
+
+.form-help {
+  margin-top: 7px;
+
+  display: flex;
+
+  gap: 5px;
+
+  color: #858c95;
+
+  font-size: 0.73rem;
+}
+
+
+.modal-section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 16px;
+
+  padding-bottom: 11px;
+
+  border-bottom: 1px solid var(--border-soft);
+}
+
+
+.section-icon {
+  width: 35px;
+
+  height: 35px;
+
+  border-radius: 9px;
+}
+
+
+.modal-section-title > div:last-child {
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+.modal-section-title strong {
+  font-size: 0.88rem;
+}
+
+
+.modal-section-title span {
+  color: #8a919a;
+
+  font-size: 0.7rem;
+}
+
+
+/* =====================================================
+   SELECTOR PRODUCTO
+===================================================== */
+
+.product-selector {
+  padding: 15px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  background: #fafbfc;
+}
+
+
+.product-add-column {
+  display: flex;
+
+  align-items: flex-end;
+}
+
+
+.btn-add-product {
+  width: 100%;
+
+  min-height: 45px;
+
+  border-radius: 9px;
+}
+
+
+/* =====================================================
+   PRODUCTOS SELECCIONADOS
+===================================================== */
+
+.selected-products {
+  margin-top: 15px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+
+.selected-products-header {
+  padding: 11px 14px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  background: #f8f9fb;
+
+  border-bottom: 1px solid var(--border);
+
+  color: #626a73;
+
+  font-size: 0.76rem;
+}
+
+
+.selected-product-item {
+  padding: 12px 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  border-bottom: 1px solid var(--border-soft);
+}
+
+
+.selected-product-item:last-child {
+  border-bottom: 0;
+}
+
+
+.selected-product-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+}
+
+
+.selected-product-avatar {
+  width: 38px;
+
+  height: 38px;
+
+  min-width: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: var(--primary-soft);
+
+  color: var(--primary);
+
+  font-weight: 700;
+}
+
+
+.selected-product-info > div:last-child {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+
+.selected-product-info strong {
+  color: #343a40;
+
+  font-size: 0.82rem;
+}
+
+
+.selected-product-info span {
+  margin-top: 2px;
+
+  color: #8b929a;
+
+  font-size: 0.7rem;
+}
+
+
+.selected-product-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.quantity-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color: #777f88;
+
+  font-size: 0.72rem;
+}
+
+
+.quantity-wrapper .form-control {
+  width: 70px;
+
+  min-height: 38px;
+
+  text-align: center;
+}
+
+
+.btn-remove-product {
+  width: 38px;
+
+  height: 38px;
+
+  border: 1px solid #efcccc;
+
+  border-radius: 9px;
+
+  background: #fff7f7;
+
+  color: var(--danger);
+}
+
+
+/* =====================================================
+   SIN PRODUCTOS
+===================================================== */
+
+.empty-products {
+  margin-top: 15px;
+
+  min-height: 130px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px dashed #d7dce2;
+
+  border-radius: 12px;
+
+  color: #868e97;
+
+  text-align: center;
+}
+
+
+.empty-products-icon {
+  margin-bottom: 7px;
+
+  font-size: 1.4rem;
+}
+
+
+.empty-products strong {
+  color: #59616a;
+
+  font-size: 0.82rem;
+}
+
+
+.empty-products span {
+  margin-top: 3px;
+
+  font-size: 0.72rem;
+}
+
+
+/* =====================================================
+   MOBILE CARDS
+===================================================== */
+
+.mobile-promotion-card {
+  padding: 16px;
+
+  background: #fff;
+}
+
+
+.mobile-promotion-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+
+.mobile-card-divider {
+  height: 1px;
+
+  margin: 14px 0;
+
+  background: var(--border-soft);
+}
+
+
+.mobile-promotion-details {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+.mobile-detail-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+
+.mobile-detail-label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #7b838c;
+
+  font-size: 0.76rem;
+}
+
+
+.mobile-detail-value {
+  text-align: right;
+
+  color: #555d65;
+
+  font-size: 0.75rem;
+}
+
+
+.mobile-card-actions {
+  margin-top: 14px;
+
+  padding-top: 13px;
+
+  border-top: 1px solid var(--border-soft);
+}
+
+
+.btn-status-action {
+  width: 100%;
+
+  min-height: 39px;
+
+  border-radius: 9px;
+
+  font-size: 0.76rem;
+
+  font-weight: 600;
+}
+
+
+.btn-status-disable {
+  border: 1px solid #efcccc;
+
+  background: #fff7f7;
+
+  color: #b94242;
+}
+
+
+.btn-status-enable {
+  border: 1px solid #c8e8da;
+
+  background: #f3fbf7;
+
+  color: #16805a;
+}
+
+
+/* =====================================================
+   BOTONES MODAL
+===================================================== */
+
+.modal-footer-custom .btn {
+  min-height: 41px;
+
+  min-width: 120px;
+
+  border-radius: 9px;
+
+  font-size: 0.86rem;
+
+  font-weight: 600;
+}
+
+
+.btn-cancel {
+  border: 1px solid #d9dee5;
+
+  background: #fff;
+
+  color: #545b63;
+}
+
+
+/* =====================================================
+   ANIMACIONES
+===================================================== */
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 767.98px) {
+
+  .promociones-page {
+    padding:
+      12px
+      10px
+      28px;
+  }
+
+
+  .main-card .card-body {
+    padding: 17px;
+  }
+
+
+  .page-icon {
+    width: 43px;
+
+    height: 43px;
+
+    min-width: 43px;
+  }
+
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+
+  .page-description {
+    font-size: 0.78rem;
+  }
+
+
+  .desktop-promotion-list {
+    display: none;
+  }
+
+
+  .mobile-promotion-list {
+    display: block;
+  }
+
+
+  .mobile-promotion-card {
+    margin: 12px;
+
+    border: 1px solid #e7eaf0;
+
+    border-radius: 12px;
+
+    box-shadow:
+      0 2px 8px
+      rgba(22, 30, 45, 0.04);
+  }
+
+
+  .table-card-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .records-wrapper {
+    width: 100%;
+
+    justify-content: flex-end;
+  }
+
+
+  .pagination-wrapper {
+    align-items: center;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+
+  .selected-product-item {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .selected-product-actions {
+    width: 100%;
+
+    justify-content: flex-end;
+  }
+
+
+  .modal-backdrop-custom {
+    padding: 10px;
+  }
+
+
+  .modal-content-custom {
+    max-height:
+      calc(100vh - 20px);
+  }
+
+
+  .modal-body-custom {
+    padding: 18px;
+  }
+
+
+  .modal-header-custom {
+    padding: 16px 17px;
+  }
+
+
+  .modal-footer-custom {
+    padding: 13px 17px;
+
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+
+  .modal-footer-custom .btn {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE PEQUEÑO
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .promociones-page {
+    padding-left: 6px;
+
+    padding-right: 6px;
+  }
+
+
+  .modal-backdrop-custom {
+    padding: 6px;
+  }
+
+
+  .modal-content-custom {
+    max-height:
+      calc(100vh - 12px);
+
+    border-radius: 12px;
+  }
+
+
+  .modal-footer-custom {
+    grid-template-columns: 1fr;
+  }
+
+
+  .quantity-wrapper {
+    flex: 1;
+  }
+
+
+  .quantity-wrapper .form-control {
+    width: 100%;
+  }
+
+
+  .selected-product-actions {
+    align-items: flex-end;
+  }
+
+}
+/* =====================================================
+   FECHAS / VIGENCIA
+===================================================== */
+
+.date-section {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+
+.date-field {
+  padding: 15px;
+
+  border:
+    1px solid
+    #e4e8ed;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fbfcfd 100%
+    );
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.date-field:focus-within {
+  border-color: #b9d4ff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(13, 110, 253, 0.06);
+}
+
+
+.date-field-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+
+.date-field-icon {
+  width: 38px;
+
+  height: 38px;
+
+  min-width: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 10px;
+
+  font-size: 0.92rem;
+}
+
+
+.start-date-icon {
+  background: #eef5ff;
+
+  color: #0d6efd;
+}
+
+
+.end-date-icon {
+  background: #eefaf4;
+
+  color: #198754;
+}
+
+
+.date-field-label {
+  display: block;
+
+  margin: 0;
+
+  color: #363c44;
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.date-field-description {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #9299a2;
+
+  font-size: 0.68rem;
+}
+
+
+.datetime-input-wrapper {
+  position: relative;
+}
+
+
+.datetime-input {
+  width: 100%;
+
+  min-height: 45px;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    #dce1e8;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #3e444b;
+
+  font-size: 0.82rem;
+
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+
+.datetime-input:hover {
+  border-color: #c4cad2;
+}
+
+
+.datetime-input:focus {
+  border-color: #86b7fe;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(13, 110, 253, 0.08);
+}
+
+
+/* ICONO NATIVO DE CALENDARIO */
+
+.datetime-input::-webkit-calendar-picker-indicator {
+  width: 20px;
+
+  height: 20px;
+
+  padding: 5px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  opacity: 0.65;
+
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
+}
+
+
+.datetime-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+
+  background: #eef3f8;
+}

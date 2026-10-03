@@ -1,0 +1,311 @@
+<section class="dashboard" [attr.aria-busy]="cargando">
+
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">LIMITSTORE</p>
+      <h1>Resumen del negocio</h1>
+      <p class="subtitle">
+        Tus ventas, productos e inventario en un solo lugar.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="dashboard-button secondary"
+        [disabled]="cargando"
+        (click)="cargarDashboard()"
+      >
+        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+        {{ cargando ? 'Actualizando...' : 'Actualizar' }}
+      </button>
+
+      <a class="dashboard-button primary" routerLink="/admin/ventas">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Ir a ventas
+      </a>
+    </div>
+  </header>
+
+  <div *ngIf="cargando" class="status-box" role="status">
+    Cargando el resumen de tu negocio...
+  </div>
+
+  <div *ngIf="mensajeError" class="error-box" role="alert">
+    <p>{{ mensajeError }}</p>
+    <button
+      type="button"
+      class="dashboard-button secondary"
+      (click)="cargarDashboard()"
+    >
+      Reintentar
+    </button>
+  </div>
+
+  <ng-container *ngIf="resumen as datos">
+
+    <div class="metrics-grid">
+
+      <article class="metric-card">
+        <div class="metric-heading">
+          <span>Ventas del mes</span>
+          <span class="metric-icon blue">
+            <i class="bi bi-calendar3" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <p class="metric-value">{{ moneda(datos.ventas_mes) }}</p>
+        <p class="metric-detail">
+          {{ numero(datos.cantidad_ventas_mes) }} ventas realizadas
+        </p>
+        <span class="period-label">{{ mesActual }}</span>
+          <div class="chart-summary">
+            <span
+              class="variation"
+              [class.positive]="
+                (datos.graficos.mes.variacion_porcentaje ?? 0) > 0
+              "
+              [class.negative]="
+                (datos.graficos.mes.variacion_porcentaje ?? 0) < 0
+              "
+            >
+              {{ textoVariacion(datos.graficos.mes.variacion_porcentaje) }}
+            </span>
+
+            <p>
+              Frente a
+              {{ moneda(datos.graficos.mes.total_anterior_comparable) }}
+              del mes anterior, hasta el
+              {{ fechaCorta(datos.graficos.mes.hasta_anterior) }}.
+            </p>
+          </div>
+
+          <app-grafico
+            [configuracion]="graficoMes"
+            [descripcion]="
+              'Ventas acumuladas por día. Mes actual: ' +
+              moneda(datos.graficos.mes.total_actual) +
+              '. Mismo período anterior: ' +
+              moneda(datos.graficos.mes.total_anterior_comparable)
+            "
+          ></app-grafico>
+
+          <p class="chart-caption">
+            Ventas acumuladas por día. La línea actual termina hoy;
+            la punteada muestra el mes anterior completo.
+          </p>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-heading">
+          <span>Ventas del año</span>
+          <span class="metric-icon green">
+            <i class="bi bi-cash-stack" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <p class="metric-value">{{ moneda(datos.ventas_anio) }}</p>
+        <p class="metric-detail">
+          {{ numero(datos.cantidad_ventas_anio) }} ventas realizadas
+        </p>
+        <span class="period-label">{{ anioActual }}</span>
+        <div class="chart-summary">
+          <span
+            class="variation"
+            [class.positive]="
+              (datos.graficos.anio.variacion_porcentaje ?? 0) > 0
+            "
+            [class.negative]="
+              (datos.graficos.anio.variacion_porcentaje ?? 0) < 0
+            "
+          >
+            {{ textoVariacion(datos.graficos.anio.variacion_porcentaje) }}
+          </span>
+
+          <p>
+            Frente a
+            {{ moneda(datos.graficos.anio.total_anterior_comparable) }}
+            del año anterior, hasta el
+            {{ fechaCorta(datos.graficos.anio.hasta_anterior) }}.
+          </p>
+        </div>
+
+        <app-grafico
+          [configuracion]="graficoAnio"
+          [descripcion]="
+            'Ventas por mes de ' + anioActual +
+            '. Total acumulado: ' +
+            moneda(datos.graficos.anio.total_actual)
+          "
+        ></app-grafico>
+
+        <p class="chart-caption">
+          Importe vendido en cada mes. * Mes en curso.
+          Los meses futuros quedan sin datos.
+        </p>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-heading">
+          <span>Producto más vendido</span>
+          <span class="metric-icon violet">
+            <i class="bi bi-trophy" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <ng-container
+          *ngIf="datos.producto_mas_vendido as producto; else sinVentas"
+        >
+          <p class="featured-product">{{ producto.nombre }}</p>
+          <p class="metric-detail">
+            {{ numero(producto.unidades_vendidas) }} unidades vendidas
+          </p>
+          <span class="period-label">{{ mesActual }}</span>
+        </ng-container>
+
+        <ng-template #sinVentas>
+          <p class="featured-product">Sin ventas este mes</p>
+          <p class="metric-detail">
+            Aquí aparecerá el producto con más unidades vendidas.
+          </p>
+        </ng-template>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-heading">
+          <span>Productos con poco stock</span>
+          <span class="metric-icon orange">
+            <i class="bi bi-box-seam" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <p class="metric-value">
+          {{ numero(datos.productos_poco_stock.length) }}
+        </p>
+        <p class="metric-detail">En el mínimo configurado o por debajo</p>
+        <span class="period-label">Inventario actual</span>
+      </article>
+
+    </div>
+
+    <div class="details-grid">
+
+      <article class="dashboard-panel">
+        <header class="panel-heading">
+          <div>
+            <h2>Productos menos vendidos</h2>
+            <p>Los 5 con menor salida · {{ mesActual }}</p>
+          </div>
+        </header>
+
+        <div
+          *ngIf="datos.productos_menos_vendidos.length; else sinProductos"
+          class="table-container"
+          tabindex="0"
+          role="region"
+          aria-label="Productos menos vendidos"
+        >
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col" class="numeric">Unidades</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let producto of datos.productos_menos_vendidos">
+                <td>
+                  <span class="product-name">{{ producto.nombre }}</span>
+                  <span class="product-code">{{ producto.codigo }}</span>
+                </td>
+                <td class="numeric">
+                  <span
+                    class="quantity-badge"
+                    [class.no-sales]="producto.unidades_vendidas === 0"
+                  >
+                    {{ numero(producto.unidades_vendidas) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #sinProductos>
+          <p class="empty-state">Todavía no hay productos activos.</p>
+        </ng-template>
+
+        <p class="panel-note">Incluye productos sin ventas durante el mes.</p>
+      </article>
+
+      <article class="dashboard-panel">
+        <header class="panel-heading">
+          <div>
+            <h2>Atención al inventario</h2>
+            <p>Productos que llegaron a su stock mínimo</p>
+          </div>
+
+          <a routerLink="/admin/lista-productos" class="panel-link">
+            Ver productos
+          </a>
+        </header>
+
+        <div
+          *ngIf="datos.productos_poco_stock.length; else stockNormal"
+          class="table-container stock-table"
+          tabindex="0"
+          role="region"
+          aria-label="Productos con poco stock"
+        >
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col" class="numeric">Actual</th>
+                <th scope="col" class="numeric">Mínimo</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let producto of datos.productos_poco_stock">
+                <td>
+                  <span class="product-name">{{ producto.nombre }}</span>
+                  <span class="product-code">{{ producto.codigo }}</span>
+                </td>
+                <td class="numeric">
+                  <span
+                    class="stock-badge"
+                    [class.out-of-stock]="producto.stock_actual === 0"
+                  >
+                    {{
+                      producto.stock_actual === 0
+                        ? 'Agotado'
+                        : numero(producto.stock_actual)
+                    }}
+                  </span>
+                </td>
+                <td class="numeric">{{ numero(producto.stock_minimo) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #stockNormal>
+          <div class="empty-state success-state">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            <p>No hay productos con stock bajo.</p>
+          </div>
+        </ng-template>
+      </article>
+
+    </div>
+
+    <p class="dashboard-footnote">
+      Solo se consideran ventas realizadas. Usa Actualizar para consultar
+      los cambios registrados desde otros equipos.
+    </p>
+
+  </ng-container>
+
+</section>

@@ -1,0 +1,1753 @@
+<div class="container-fluid promociones-page">
+
+  <!-- ===================================================== -->
+  <!-- CARD 1                                                -->
+  <!-- ===================================================== -->
+
+  <div class="card main-card mb-4">
+
+    <div class="card-body">
+
+      <div class="page-header-content">
+
+        <div class="page-icon">
+          <i class="bi bi-percent"></i>
+        </div>
+
+        <div class="page-heading">
+
+          <h2 class="page-title">
+            Promociones
+          </h2>
+
+          <p class="page-description">
+            Administra descuentos, precios especiales y packs de productos.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="card-divider"></div>
+
+
+      <div class="row g-3 align-items-center">
+
+        <div class="col-12 col-lg">
+
+          <div class="search-box">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar promoción..."
+              [(ngModel)]="busqueda"
+              (input)="buscar()"
+            >
+
+            <button
+              *ngIf="busqueda"
+              type="button"
+              class="search-clear"
+              (click)="limpiarBusqueda()"
+            >
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-12 col-lg-auto">
+
+          <button
+            type="button"
+            class="btn btn-primary btn-new w-100"
+            (click)="nuevaPromocion()"
+          >
+
+            <i class="bi bi-plus-lg"></i>
+
+            Nueva promoción
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- MENSAJES                                              -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="mensajeExito"
+    class="alert alert-success custom-alert"
+  >
+
+    <div class="alert-content">
+
+      <i class="bi bi-check-circle"></i>
+
+      {{ mensajeExito }}
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="mensajeExito = ''"
+    >
+    </button>
+
+  </div>
+
+
+  <div
+    *ngIf="mensajeError"
+    class="alert alert-danger custom-alert"
+  >
+
+    <div class="alert-content">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      {{ mensajeError }}
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="mensajeError = ''"
+    >
+    </button>
+
+  </div>
+
+
+
+  <!-- ===================================================== -->
+  <!-- CARD LISTADO                                          -->
+  <!-- ===================================================== -->
+
+  <div class="card table-card">
+
+    <div class="table-card-header">
+
+      <div>
+
+        <h5 class="table-title">
+          Listado de promociones
+        </h5>
+
+        <p class="table-subtitle">
+
+          <strong>
+            {{ promocionesFiltradas.length }}
+          </strong>
+
+          promociones encontradas
+
+        </p>
+
+      </div>
+
+
+      <div class="records-wrapper">
+
+        <span>
+          Mostrar
+        </span>
+
+        <select
+          class="form-select"
+          [(ngModel)]="registrosPorPagina"
+          (change)="cambiarCantidadRegistros()"
+        >
+
+          <option [ngValue]="5">5</option>
+
+          <option [ngValue]="10">10</option>
+
+          <option [ngValue]="20">20</option>
+
+          <option [ngValue]="50">50</option>
+
+        </select>
+
+        <span>
+          registros
+        </span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- CARGANDO                                            -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="cargando"
+      class="loading-state"
+    >
+
+      <div class="spinner-border text-primary">
+      </div>
+
+      <strong>
+        Cargando promociones...
+      </strong>
+
+      <span>
+        Obteniendo información.
+      </span>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- DESKTOP                                              -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        promocionesPagina.length > 0
+      "
+      class="desktop-promotion-list"
+    >
+
+      <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Promoción
+              </th>
+
+              <th>
+                Tipo
+              </th>
+
+              <th>
+                Valor
+              </th>
+
+              <th>
+                Vigencia
+              </th>
+
+              <th class="text-center">
+                Productos
+              </th>
+
+              <th class="text-center">
+                Estado
+              </th>
+
+              <th class="text-center">
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let promocion of promocionesPagina;
+                trackBy: trackByPromocion
+              "
+            >
+
+              <!-- PROMOCION -->
+
+              <td>
+
+                <div class="promotion-info">
+
+                  <div class="promotion-avatar">
+
+                    {{
+                      (
+                        promocion.nombre ||
+                        'P'
+                      )
+                        .charAt(0)
+                        .toUpperCase()
+                    }}
+
+                  </div>
+
+
+                  <div class="promotion-data">
+
+                    <span class="promotion-name">
+
+                      {{
+                        promocion.nombre ||
+                        'Sin nombre'
+                      }}
+
+                    </span>
+
+                    <span class="promotion-id">
+                      ID #{{ promocion.id }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- TIPO -->
+
+              <td>
+
+                <span class="type-badge">
+
+                  <i
+                    class="bi"
+                    [class.bi-percent]="
+                      promocion.tipo_promocion ===
+                      'PORCENTAJE'
+                    "
+                    [class.bi-cash-stack]="
+                      promocion.tipo_promocion ===
+                      'MONTO'
+                    "
+                    [class.bi-tag]="
+                      promocion.tipo_promocion ===
+                      'PRECIO_FIJO'
+                    "
+                    [class.bi-box-seam]="
+                      promocion.tipo_promocion ===
+                      'PACK'
+                    "
+                  >
+                  </i>
+
+                  {{
+                    tipoTexto(
+                      promocion.tipo_promocion
+                    )
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- VALOR -->
+
+              <td>
+
+                <strong class="promotion-value">
+
+                  {{
+                    valorTexto(
+                      promocion
+                    )
+                  }}
+
+                </strong>
+
+              </td>
+
+
+              <!-- VIGENCIA -->
+
+              <td>
+
+                <div class="date-range">
+
+                  <span>
+
+                    <i class="bi bi-calendar-event"></i>
+
+                    {{
+                      promocion.fecha_inicio
+                        | date:'dd/MM/yyyy'
+                    }}
+
+                  </span>
+
+                  <small>
+                    hasta
+                  </small>
+
+                  <span>
+
+                    <i class="bi bi-calendar-check"></i>
+
+                    {{
+                      promocion.fecha_fin
+                        | date:'dd/MM/yyyy'
+                    }}
+
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- PRODUCTOS -->
+
+              <td class="text-center">
+
+                <span class="products-count">
+
+                  <i class="bi bi-box-seam"></i>
+
+                  {{
+                    promocion.total_productos ||
+                    0
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ESTADO -->
+
+              <td class="text-center">
+
+                <span
+                  class="status-badge"
+                  [class.status-active]="
+                    estaActiva(promocion)
+                  "
+                  [class.status-inactive]="
+                    !estaActiva(promocion)
+                  "
+                >
+
+                  <span class="status-dot"></span>
+
+                  {{
+                    estaActiva(promocion)
+                      ? 'Activa'
+                      : 'Inactiva'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACCIONES -->
+
+              <td class="text-center">
+
+                <div class="actions">
+
+                  <button
+                    type="button"
+                    class="btn-action btn-edit"
+                    title="Editar promoción"
+                    [disabled]="
+                      cambiandoEstadoId ===
+                      promocion.id
+                    "
+                    (click)="
+                      editarPromocion(
+                        promocion
+                      )
+                    "
+                  >
+
+                    <i class="bi bi-pencil"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="btn-action"
+                    [class.btn-disable]="
+                      estaActiva(promocion)
+                    "
+                    [class.btn-enable]="
+                      !estaActiva(promocion)
+                    "
+                    [disabled]="
+                      cambiandoEstadoId !== null
+                    "
+                    (click)="
+                      cambiarEstado(
+                        promocion
+                      )
+                    "
+                  >
+
+                    <span
+                      *ngIf="
+                        cambiandoEstadoId ===
+                        promocion.id
+                      "
+                      class="small-spinner"
+                    >
+                    </span>
+
+
+                    <i
+                      *ngIf="
+                        cambiandoEstadoId !==
+                        promocion.id
+                      "
+                      class="bi"
+                      [class.bi-toggle-on]="
+                        estaActiva(promocion)
+                      "
+                      [class.bi-toggle-off]="
+                        !estaActiva(promocion)
+                      "
+                    >
+                    </i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- MOBILE                                               -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        promocionesPagina.length > 0
+      "
+      class="mobile-promotion-list"
+    >
+
+      <div
+        *ngFor="
+          let promocion of promocionesPagina;
+          trackBy: trackByPromocion
+        "
+        class="mobile-promotion-card"
+      >
+
+        <div class="mobile-promotion-header">
+
+          <div class="promotion-info">
+
+            <div class="promotion-avatar">
+
+              {{
+                (
+                  promocion.nombre ||
+                  'P'
+                )
+                  .charAt(0)
+                  .toUpperCase()
+              }}
+
+            </div>
+
+
+            <div class="promotion-data">
+
+              <span class="promotion-name">
+                {{ promocion.nombre }}
+              </span>
+
+              <span class="promotion-id">
+                ID #{{ promocion.id }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="btn-action btn-edit"
+            (click)="editarPromocion(promocion)"
+          >
+
+            <i class="bi bi-pencil"></i>
+
+          </button>
+
+        </div>
+
+
+        <div class="mobile-card-divider"></div>
+
+
+        <div class="mobile-promotion-details">
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-stars"></i>
+
+              Tipo
+
+            </div>
+
+            <div class="mobile-detail-value">
+
+              <span class="type-badge">
+
+                {{
+                  tipoTexto(
+                    promocion.tipo_promocion
+                  )
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-currency-dollar"></i>
+
+              Valor
+
+            </div>
+
+            <div class="mobile-detail-value promotion-value">
+
+              {{
+                valorTexto(
+                  promocion
+                )
+              }}
+
+            </div>
+
+          </div>
+
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-box-seam"></i>
+
+              Productos
+
+            </div>
+
+            <div class="mobile-detail-value">
+
+              {{
+                promocion.total_productos ||
+                0
+              }}
+
+            </div>
+
+          </div>
+
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-calendar3"></i>
+
+              Vigencia
+
+            </div>
+
+            <div class="mobile-detail-value mobile-date">
+
+              {{
+                promocion.fecha_inicio
+                  | date:'dd/MM/yyyy'
+              }}
+
+              -
+
+              {{
+                promocion.fecha_fin
+                  | date:'dd/MM/yyyy'
+              }}
+
+            </div>
+
+          </div>
+
+
+          <div class="mobile-detail-row">
+
+            <div class="mobile-detail-label">
+
+              <i class="bi bi-circle-half"></i>
+
+              Estado
+
+            </div>
+
+            <div class="mobile-detail-value">
+
+              <span
+                class="status-badge"
+                [class.status-active]="
+                  estaActiva(promocion)
+                "
+                [class.status-inactive]="
+                  !estaActiva(promocion)
+                "
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  estaActiva(promocion)
+                    ? 'Activa'
+                    : 'Inactiva'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="mobile-card-actions">
+
+          <button
+            type="button"
+            class="btn-status-action"
+            [class.btn-status-disable]="
+              estaActiva(promocion)
+            "
+            [class.btn-status-enable]="
+              !estaActiva(promocion)
+            "
+            [disabled]="
+              cambiandoEstadoId !== null
+            "
+            (click)="
+              cambiarEstado(
+                promocion
+              )
+            "
+          >
+
+            <span
+              *ngIf="
+                cambiandoEstadoId ===
+                promocion.id
+              "
+              class="small-spinner"
+            >
+            </span>
+
+
+            <i
+              *ngIf="
+                cambiandoEstadoId !==
+                promocion.id
+              "
+              class="bi"
+              [class.bi-toggle-on]="
+                estaActiva(promocion)
+              "
+              [class.bi-toggle-off]="
+                !estaActiva(promocion)
+              "
+            >
+            </i>
+
+
+            {{
+              estaActiva(promocion)
+                ? 'Desactivar promoción'
+                : 'Activar promoción'
+            }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- SIN DATOS                                            -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        promocionesPagina.length === 0
+      "
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        <i class="bi bi-percent"></i>
+      </div>
+
+      <h5>
+        No hay promociones
+      </h5>
+
+
+      <ng-container
+        *ngIf="
+          busqueda;
+          else sinPromociones
+        "
+      >
+
+        <p>
+
+          No encontramos resultados para
+
+          <strong>
+            "{{ busqueda }}"
+          </strong>.
+
+        </p>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="limpiarBusqueda()"
+        >
+
+          Limpiar búsqueda
+
+        </button>
+
+      </ng-container>
+
+
+      <ng-template #sinPromociones>
+
+        <p>
+          Todavía no existen promociones registradas.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="nuevaPromocion()"
+        >
+
+          <i class="bi bi-plus-lg me-1"></i>
+
+          Nueva promoción
+
+        </button>
+
+      </ng-template>
+
+    </div>
+
+
+
+    <!-- =================================================== -->
+    <!-- PAGINACION                                           -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        !cargando &&
+        promocionesFiltradas.length > 0
+      "
+      class="pagination-wrapper"
+    >
+
+      <div class="pagination-info">
+
+        Mostrando
+
+        <strong>
+          {{ registroInicial }}
+        </strong>
+
+        a
+
+        <strong>
+          {{ registroFinal }}
+        </strong>
+
+        de
+
+        <strong>
+          {{ promocionesFiltradas.length }}
+        </strong>
+
+        registros
+
+      </div>
+
+
+      <div class="pagination">
+
+        <button
+          type="button"
+          [disabled]="paginaActual === 1"
+          (click)="paginaAnterior()"
+        >
+
+          <i class="bi bi-chevron-left"></i>
+
+        </button>
+
+
+        <button
+          *ngFor="
+            let pagina of obtenerPaginas()
+          "
+          type="button"
+          [class.active]="
+            paginaActual === pagina
+          "
+          (click)="irPagina(pagina)"
+        >
+
+          {{ pagina }}
+
+        </button>
+
+
+        <button
+          type="button"
+          [disabled]="
+            paginaActual === totalPaginas
+          "
+          (click)="paginaSiguiente()"
+        >
+
+          <i class="bi bi-chevron-right"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- MODAL                                                  -->
+<!-- ===================================================== -->
+
+<div
+  *ngIf="mostrarModal"
+  class="modal-backdrop-custom"
+  (click)="cerrarModal()"
+>
+
+  <div
+    class="modal-dialog-custom"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-content-custom">
+
+      <!-- HEADER -->
+
+      <div class="modal-header-custom">
+
+        <div class="modal-title-content">
+
+          <div class="modal-icon">
+
+            <i
+              class="bi"
+              [class.bi-plus-lg]="!esEdicion"
+              [class.bi-pencil]="esEdicion"
+            >
+            </i>
+
+          </div>
+
+
+          <div class="modal-heading">
+
+            <h2>
+
+              {{
+                esEdicion
+                  ? 'Editar promoción'
+                  : 'Nueva promoción'
+              }}
+
+            </h2>
+
+            <p>
+              Configura la promoción y los productos asociados.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          [disabled]="guardando"
+          (click)="cerrarModal()"
+        >
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+
+
+      <!-- CARGANDO -->
+
+      <div
+        *ngIf="cargandoPromocion"
+        class="modal-loading"
+      >
+
+        <div class="spinner-border text-primary">
+        </div>
+
+        <strong>
+          Cargando promoción...
+        </strong>
+
+      </div>
+
+
+
+      <!-- FORMULARIO -->
+
+      <form
+        *ngIf="!cargandoPromocion"
+        (ngSubmit)="guardarPromocion()"
+      >
+
+        <div class="modal-body-custom">
+
+
+          <!-- ERROR -->
+
+          <div
+            *ngIf="mensajeErrorModal"
+            class="alert alert-danger modal-alert"
+          >
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              {{ mensajeErrorModal }}
+            </span>
+
+          </div>
+
+
+
+          <!-- ============================================= -->
+          <!-- INFORMACION GENERAL                           -->
+          <!-- ============================================= -->
+
+          <div class="modal-section-title">
+
+            <div class="section-icon">
+              <i class="bi bi-percent"></i>
+            </div>
+
+            <div>
+
+              <strong>
+                Información general
+              </strong>
+
+              <span>
+                Datos principales de la promoción
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="row g-3">
+
+
+            <!-- NOMBRE -->
+
+            <div class="col-12">
+
+              <label class="form-label">
+
+                Nombre
+
+                <span class="required">
+                  *
+                </span>
+
+              </label>
+
+              <input
+                type="text"
+                name="nombre"
+                class="form-control"
+                maxlength="100"
+                placeholder="Ej: Pack Verano"
+                [(ngModel)]="formulario.nombre"
+                [disabled]="guardando"
+              >
+
+            </div>
+
+
+            <!-- DESCRIPCION -->
+
+            <div class="col-12">
+
+              <label class="form-label">
+                Descripción
+              </label>
+
+              <textarea
+                name="descripcion"
+                class="form-control"
+                rows="3"
+                maxlength="255"
+                placeholder="Descripción de la promoción..."
+                [(ngModel)]="formulario.descripcion"
+                [disabled]="guardando"
+              >
+              </textarea>
+
+            </div>
+
+
+            <!-- TIPO -->
+
+            <div class="col-12 col-md-6">
+
+              <label class="form-label">
+
+                Tipo de promoción
+
+                <span class="required">
+                  *
+                </span>
+
+              </label>
+
+              <select
+                name="tipo_promocion"
+                class="form-select"
+                [(ngModel)]="formulario.tipo_promocion"
+                [disabled]="guardando"
+              >
+
+                <option value="PACK">
+                  Pack
+                </option>
+
+                <option value="PORCENTAJE">
+                  Porcentaje
+                </option>
+
+                <option value="MONTO">
+                  Monto de descuento
+                </option>
+
+                <option value="PRECIO_FIJO">
+                  Precio fijo
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- VALOR -->
+
+            <div class="col-12 col-md-6">
+
+              <label class="form-label">
+
+                {{ etiquetaValor }}
+
+                <span class="required">
+                  *
+                </span>
+
+              </label>
+
+
+              <div class="input-group">
+
+                <span
+                  *ngIf="
+                    formulario.tipo_promocion !==
+                    'PORCENTAJE'
+                  "
+                  class="input-group-text"
+                >
+                  $
+                </span>
+
+                <input
+                  type="number"
+                  name="valor_descuento"
+                  class="form-control"
+                  min="0"
+                  step="1"
+                  [(ngModel)]="
+                    formulario.valor_descuento
+                  "
+                  [disabled]="guardando"
+                >
+
+                <span
+                  *ngIf="
+                    formulario.tipo_promocion ===
+                    'PORCENTAJE'
+                  "
+                  class="input-group-text"
+                >
+                  %
+                </span>
+
+              </div>
+
+
+              <div class="form-help">
+
+                <i class="bi bi-info-circle"></i>
+
+                {{ ayudaValor }}
+
+              </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+<!-- VIGENCIA                                          -->
+<!-- ================================================= -->
+
+<div class="col-12">
+
+  <div class="date-section">
+
+    <!-- FECHA INICIO -->
+
+    <div class="date-field">
+
+      <div class="date-field-header">
+
+        <div class="date-field-icon start-date-icon">
+          <i class="bi bi-calendar-plus"></i>
+        </div>
+
+        <div>
+          <label
+            for="fechaInicio"
+            class="date-field-label"
+          >
+            Fecha de inicio
+          </label>
+
+          <span class="date-field-description">
+            Desde cuándo estará disponible
+          </span>
+        </div>
+
+      </div>
+
+      <div class="datetime-input-wrapper">
+
+        <input
+          id="fechaInicio"
+          type="date"
+          name="fecha_inicio"
+          class="form-control datetime-input"
+          [(ngModel)]="formulario.fecha_inicio"
+          [disabled]="guardando"
+          required
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- FECHA TERMINO -->
+
+    <div class="date-field">
+
+      <div class="date-field-header">
+
+        <div class="date-field-icon end-date-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+
+        <div>
+          <label
+            for="fechaFin"
+            class="date-field-label"
+          >
+            Fecha de término
+          </label>
+
+          <span class="date-field-description">
+            Hasta cuándo estará disponible
+          </span>
+        </div>
+
+      </div>
+
+      <div class="datetime-input-wrapper">
+
+        <input
+          id="fechaFin"
+          type="date"
+          name="fecha_fin"
+          class="form-control datetime-input"
+          [(ngModel)]="formulario.fecha_fin"
+          [disabled]="guardando"
+          required
+        >
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+            <!-- ESTADO -->
+
+            <div class="col-12 col-md-6">
+
+              <label class="form-label">
+                Estado
+              </label>
+
+              <select
+                name="estado"
+                class="form-select"
+                [(ngModel)]="formulario.estado"
+                [disabled]="guardando"
+              >
+
+                <option [ngValue]="1">
+                  Activa
+                </option>
+
+                <option [ngValue]="0">
+                  Inactiva
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- ============================================= -->
+          <!-- PRODUCTOS                                     -->
+          <!-- ============================================= -->
+
+          <div class="modal-section-title mt-4">
+
+            <div class="section-icon">
+              <i class="bi bi-boxes"></i>
+            </div>
+
+            <div>
+
+              <strong>
+                Productos
+              </strong>
+
+              <span>
+                Agrega los productos incluidos en la promoción
+              </span>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- BUSCAR PRODUCTO -->
+
+          <div class="product-selector">
+
+            <div class="row g-2">
+
+              <div class="col-12 col-lg-7">
+
+                <label class="form-label">
+                  Producto
+                </label>
+
+                <select
+                  name="productoSeleccionado"
+                  class="form-select"
+                  [(ngModel)]="
+                    productoSeleccionadoId
+                  "
+                  [disabled]="
+                    guardando ||
+                    cargandoProductos
+                  "
+                >
+
+                  <option
+                    [ngValue]="null"
+                  >
+                    Seleccione un producto...
+                  </option>
+
+                  <option
+                    *ngFor="
+                      let producto of productosDisponibles
+                    "
+                    [ngValue]="producto.id"
+                  >
+
+                    {{
+                      producto.codigo
+                        ? producto.codigo + ' - '
+                        : ''
+                    }}
+
+                    {{ producto.nombre }}
+
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="col-5 col-lg-2">
+
+                <label class="form-label">
+                  Cantidad
+                </label>
+
+                <input
+                  type="number"
+                  name="cantidadProducto"
+                  class="form-control"
+                  min="1"
+                  step="1"
+                  [(ngModel)]="
+                    cantidadProducto
+                  "
+                  [disabled]="guardando"
+                >
+
+              </div>
+
+
+              <div class="col-7 col-lg-3 product-add-column">
+
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-add-product"
+                  [disabled]="guardando"
+                  (click)="agregarProducto()"
+                >
+
+                  <i class="bi bi-plus-lg"></i>
+
+                  Agregar
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- PRODUCTOS AGREGADOS -->
+
+          <div
+            *ngIf="
+              productosPromocion.length > 0
+            "
+            class="selected-products"
+          >
+
+            <div class="selected-products-header">
+
+              <span>
+                Productos agregados
+              </span>
+
+              <strong>
+                {{ productosPromocion.length }}
+              </strong>
+
+            </div>
+
+
+            <div
+              *ngFor="
+                let producto of productosPromocion;
+                trackBy: trackByProducto
+              "
+              class="selected-product-item"
+            >
+
+              <div class="selected-product-info">
+
+                <div class="selected-product-avatar">
+
+                  {{
+                    (
+                      producto.nombre ||
+                      'P'
+                    )
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
+
+                </div>
+
+
+                <div>
+
+                  <strong>
+                    {{ producto.nombre }}
+                  </strong>
+
+                  <span>
+
+                    {{
+                      producto.codigo ||
+                      'Sin código'
+                    }}
+
+                    ·
+
+                    {{
+                      formatearPrecio(
+                        producto.precio_venta
+                      )
+                    }}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="selected-product-actions">
+
+                <div class="quantity-wrapper">
+
+                  <span>
+                    Cant.
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    class="form-control"
+                    [name]="
+                      'cantidad_' +
+                      producto.id_producto
+                    "
+                    [(ngModel)]="
+                      producto.cantidad
+                    "
+                    [disabled]="guardando"
+                  >
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="btn-remove-product"
+                  title="Quitar producto"
+                  [disabled]="guardando"
+                  (click)="
+                    quitarProducto(
+                      producto.id_producto
+                    )
+                  "
+                >
+
+                  <i class="bi bi-trash"></i>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- SIN PRODUCTOS -->
+
+          <div
+            *ngIf="
+              productosPromocion.length === 0
+            "
+            class="empty-products"
+          >
+
+            <div class="empty-products-icon">
+
+              <i class="bi bi-box-seam"></i>
+
+            </div>
+
+            <strong>
+              Sin productos agregados
+            </strong>
+
+            <span>
+              Selecciona un producto y presiona Agregar.
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer-custom">
+
+          <button
+            type="button"
+            class="btn btn-cancel"
+            [disabled]="guardando"
+            (click)="cerrarModal()"
+          >
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-save"
+            [disabled]="guardando"
+          >
+
+            <ng-container *ngIf="!guardando">
+
+              <i
+                class="bi me-2"
+                [class.bi-plus-lg]="!esEdicion"
+                [class.bi-check-lg]="esEdicion"
+              >
+              </i>
+
+              {{
+                esEdicion
+                  ? 'Guardar cambios'
+                  : 'Crear promoción'
+              }}
+
+            </ng-container>
+
+
+            <ng-container *ngIf="guardando">
+
+              <span
+                class="spinner-border spinner-border-sm me-2"
+              >
+              </span>
+
+              Guardando...
+
+            </ng-container>
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
